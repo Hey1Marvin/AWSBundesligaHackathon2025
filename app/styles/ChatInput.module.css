@@ -1,0 +1,59 @@
+.container {
+  background-color: #0d0d0d;
+  padding: 12px;
+  width: 100%;
+}
+
+.inputRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.inputField {
+  flex: 1;
+  background-color: #1f1f1f !important;
+  border-radius: 24px !important;
+  color: #ffffff !important;
+  padding: 0 16px !important;
+  margin-right: 8px;
+  height: 48px !important;
+  border: none !important;
+}
+
+.inputField::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+}
+
+.sendButton {
+  background-color: #e10600 !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 24px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border: none !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sendButton:hover {
+  background-color: #b30500 !important;
+}
+
+.inlineSuggestion {
+  padding: 0 16px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: row;
+}
+
+.ghostText {
+  color: transparent;
+}
+
+.suggestionText {
+  color: rgba(255, 255, 255, 0.5);
+}
