@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
@@ -10,36 +10,76 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   const shouldTruncate = message.length > 200;
   const displayMessage = shouldTruncate ? `${message.substring(0, 200)}...` : message;
 
+  // Animated values for message bubble
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.95)).current;
+
+  // Animated value for system avatar badge pulsation
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Only for system messages: a subtle pulsating badge effect
+    if (!isUser) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.2,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
+  }, [fadeAnim, scaleAnim, pulseAnim, isUser]);
+
   return (
     <View style={[styles.container, isUser ? styles.userContainer : styles.systemContainer]}>
-      <View style={[styles.messageWrapper, isUser ? styles.userMessageWrapper : styles.systemMessageWrapper]}>
+      <Animated.View
+        style={[
+          styles.messageWrapper,
+          isUser ? styles.userMessageWrapper : styles.systemMessageWrapper,
+          { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+        ]}
+      >
         {!isUser && (
           <View style={styles.avatarContainer}>
-            <View style={styles.avatarBadge}>
+            <Animated.View style={[styles.avatarBadge, { transform: [{ scale: pulseAnim }] }]}>
               <Icon name="soccer" size={14} color="#ffffff" />
-            </View>
+            </Animated.View>
           </View>
         )}
-        
+
         <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble]}>
           <Text style={[styles.message, isUser ? styles.userText : styles.systemText]}>
             {displayMessage}
           </Text>
-          
           <View style={styles.messageFooter}>
             <Text style={styles.timestamp}>{formattedTime}</Text>
             {isUser && (
-              <Icon 
-                name="check-all" 
-                size={14} 
-                color="#ffffff" 
-                style={styles.readStatus} 
-              />
+              <Icon name="check-all" size={14} color="#ffffff" style={styles.readStatus} />
             )}
           </View>
         </View>
-      </View>
-      
+      </Animated.View>
+
       {isUser && (
         <View style={styles.userAvatarContainer}>
           <View style={styles.userAvatar}>
@@ -77,7 +117,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#282828',
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -112,11 +152,11 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    elevation: 1,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
   },
   userBubble: {
     backgroundColor: '#e10600',
@@ -149,7 +189,7 @@ const styles = StyleSheet.create({
   },
   readStatus: {
     marginLeft: 2,
-  }
+  },
 });
 
 export default ChatMessage;

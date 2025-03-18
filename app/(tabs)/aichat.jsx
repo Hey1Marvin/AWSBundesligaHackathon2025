@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable, StatusBar, SafeAreaView, Platform } from 'react-native';
 import { Link } from 'expo-router';
 import bundesligaLogo from '@/assets/images/bundesliga_logo.png';
-import { BlurView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
 import ChatWindow from '../components/ChatWindow';
@@ -21,12 +19,7 @@ export default function AIChatPage() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={['#0d0d0d', '#1a1a1a']}
-        style={styles.container}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
+      <View style={styles.container}>
         {/* Header with title and logo */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
@@ -58,7 +51,6 @@ export default function AIChatPage() {
             </View>
           )}
           
-          <Image source={bundesligaLogo} resizeMode="contain" style={styles.image} />
         </View>
         
         {/* Chat area */}
@@ -66,30 +58,11 @@ export default function AIChatPage() {
           <ChatWindow />
         </View>
         
-        {/* Input area with blur effect background */}
+        {/* Input area without background */}
         <View style={styles.inputContainer}>
-          {Platform.OS === 'ios' ? (
-            <BlurView intensity={30} tint="dark" style={styles.blurEffect}>
-              <ChatInput onSend={handleSendMessage} />
-            </BlurView>
-          ) : (
-            <View style={styles.androidInputWrapper}>
-              <ChatInput onSend={handleSendMessage} />
-            </View>
-          )}
+          <ChatInput onSend={handleSendMessage} />
         </View>
-        
-        {/* Pattern overlay for visual interest */}
-        <View style={styles.patternOverlay} pointerEvents="none">
-          {Array(5).fill().map((_, i) => (
-            <View key={i} style={[styles.patternDot, { 
-              top: `${10 + Math.random() * 80}%`,
-              left: `${Math.random() * 90}%`,
-              opacity: 0.1 + Math.random() * 0.15
-            }]} />
-          ))}
-        </View>
-      </LinearGradient>
+      </View>
     </SafeAreaView>
   );
 }
@@ -154,12 +127,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
-  image: {
-    width: '50%',
-    height: 60,
-    alignSelf: 'center',
-    marginVertical: 12,
-  },
   chatContainer: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -168,29 +135,5 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 8,
   },
-  blurEffect: {
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.05)',
-  },
-  androidInputWrapper: {
-    backgroundColor: 'rgba(13, 13, 13, 0.95)',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.05)',
-  },
-  patternOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: -1,
-  },
-  patternDot: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#e10600',
-    transform: [{ scale: 1 }],
-  },
 });
+

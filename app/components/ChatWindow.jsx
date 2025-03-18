@@ -1,6 +1,32 @@
 import React, { useRef, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Image, Animated } from 'react-native';
 import ChatMessage from './ChatMessage';
+
+const AnimatedTypingDot = ({ delay = 0 }) => {
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.2,
+          duration: 500,
+          delay,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 0.8,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [scaleAnim, delay]);
+
+  return (
+    <Animated.View style={[styles.typingDot, { transform: [{ scale: scaleAnim }] }]} />
+  );
+};
 
 const ChatWindow = ({ messages = [] }) => {
   const scrollViewRef = useRef(null);
@@ -36,22 +62,6 @@ const ChatWindow = ({ messages = [] }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Image 
-            source={{ uri: '/api/placeholder/32/32' }} 
-            style={styles.logo} 
-            alt="Bundesliga Logo" 
-          />
-          <Text style={styles.headerTitle}>Bundesliga Chat</Text>
-        </View>
-        <View style={styles.headerActions}>
-          <View style={styles.badgeOnline}></View>
-          <Text style={styles.statusText}>Online</Text>
-        </View>
-      </View>
-
       {/* Date Divider */}
       <View style={styles.dateDivider}>
         <View style={styles.dividerLine}></View>
@@ -75,12 +85,12 @@ const ChatWindow = ({ messages = [] }) => {
           />
         ))}
         
-        {/* Typing indicator - can be conditionally rendered */}
+        {/* Typing indicator */}
         <View style={styles.typingContainer}>
           <View style={styles.typingBubble}>
-            <View style={styles.typingDot}></View>
-            <View style={[styles.typingDot, styles.typingDotMiddle]}></View>
-            <View style={styles.typingDot}></View>
+            <AnimatedTypingDot delay={0} />
+            <AnimatedTypingDot delay={200} />
+            <AnimatedTypingDot delay={400} />
           </View>
         </View>
       </ScrollView>
@@ -92,47 +102,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0d0d0d',
-    display: 'flex',
     flexDirection: 'column',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1f1f1f',
-  },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 12,
-  },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  badgeOnline: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#4caf50',
-    marginRight: 6,
-  },
-  statusText: {
-    color: '#4caf50',
-    fontSize: 14,
   },
   dateDivider: {
     flexDirection: 'row',
@@ -166,7 +136,7 @@ const styles = StyleSheet.create({
   typingBubble: {
     backgroundColor: '#1f1f1f',
     borderRadius: 18,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -174,15 +144,11 @@ const styles = StyleSheet.create({
     marginLeft: 44,
   },
   typingDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: '#e10600',
-    marginHorizontal: 2,
-    opacity: 0.6,
-  },
-  typingDotMiddle: {
-    opacity: 0.9,
+    marginHorizontal: 3,
   },
 });
 

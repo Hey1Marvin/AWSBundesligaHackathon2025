@@ -11,6 +11,9 @@
     "test": "jest --watchAll",
     "lint": "expo lint"
   },
+  
+  "proxy": "https://hdeepi3xgi.execute-api.eu-central-1.amazonaws.com",
+  
   "jest": {
     "preset": "jest-expo"
   },
