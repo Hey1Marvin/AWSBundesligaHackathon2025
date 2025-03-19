@@ -4,6 +4,8 @@ import { TextInput } from 'react-native-paper';
 import ArrowUp from '@/assets/images/icons/ArrowUp';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 
 // Erweitertes Dictionary mit Kategorien und Gewichtungen
 const SMART_DICTIONARY = {
@@ -47,6 +49,7 @@ const ChatInput = ({ onSend }) => {
   const [userContext, setUserContext] = useState({ categories: {} });
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const inputRef = useRef(null);
+  const insets = useSafeAreaInsets();
 
   // Aktuelle Kategorie bestimmen basierend auf Kontext
   const getCurrentCategory = (inputText) => {
@@ -215,7 +218,10 @@ const ChatInput = ({ onSend }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[
+      styles.container, 
+      { paddingBottom: Math.max(16, insets.bottom) }
+    ]}>
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
@@ -261,8 +267,8 @@ const ChatInput = ({ onSend }) => {
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
-              <Text style={{ color: '#FFFFFF', fontSize: 16 }}>Send</Text>
-              <ArrowUp color="#FFFFFF" />
+              <Text style={{ color: '#FFFFFF', fontSize: 16, marginRight: 4 }}>Send</Text>
+              <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
           </View>
         </View>
@@ -273,10 +279,14 @@ const ChatInput = ({ onSend }) => {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: 'transparent',
     padding: 16,
     width: '100%',
-    marginBottom: 70,
+    zIndex: 100,
   },
   inputRow: {
     flexDirection: 'row',
@@ -292,6 +302,14 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   divLeft: {
     flex: 0.65,
@@ -364,5 +382,6 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
 });
+
 
 export default ChatInput;
