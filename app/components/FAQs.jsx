@@ -12,7 +12,7 @@ const FAQs = ({ onSelect }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Häufig gestellte Fragen</Text>
+      <Text style={styles.title}>FAQs</Text>
       {questions.map((question, index) => (
         <TouchableOpacity 
           key={index} 
@@ -30,26 +30,38 @@ const FAQs = ({ onSelect }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 15,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 16,
+    fontWeight: '700',
+    color: '#f0f0f0',
+    marginBottom: 10,
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0.5, height: 0.5 },
+    textShadowRadius: 1,
   },
   faqButton: {
-    backgroundColor: '#333333',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginBottom: 12,
-    width: '80%',
+    backgroundColor: '#2a2a2a',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    marginBottom: 10,
+    width: '70%',
+    borderWidth: 1,
+    borderColor: '#555',
+    // Subtle shadow for depth
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 3,
   },
   faqText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#ffffff',
     textAlign: 'center',
+    fontWeight: '600',
   },
 });
 
