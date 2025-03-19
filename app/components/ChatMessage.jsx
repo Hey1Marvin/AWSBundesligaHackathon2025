@@ -3,7 +3,16 @@ import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Markdown from 'react-native-markdown-display';
 
+import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
+
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { height } from '@mui/system';
+
 const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
+  // Color Handling
+  const colorScheme = useColorScheme();
+
   const isUser = type === 'user';
   const formattedTime = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -54,18 +63,27 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         ]}
       >
         {!isUser && (
-          <View style={styles.avatarContainer}>
-            <Animated.View style={[styles.avatarBadge, { transform: [{ scale: pulseAnim }] }]}>
-              <Icon name="soccer" size={14} color="#ffffff" />
-            </Animated.View>
+          <View style={[styles.avatarContainer, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
+          <View style ={styles.logoBack}>
+            <BundesligaLogo />
+          </View>
           </View>
         )}
 
         <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble]}>
+<<<<<<< HEAD
           <Markdown style={markdownStyles}>
             {message}
           </Markdown>
           <Animated.Text style={styles.timestamp}>{formattedTime}</Animated.Text>
+=======
+          <Text style={[styles.message, isUser ? styles.userText : styles.systemText]}>
+            {displayMessage}
+          </Text>
+          <View style={styles.messageFooter}>
+            <Text style={styles.timestamp}>{formattedTime}</Text>
+          </View>
+>>>>>>> bde7a4bba418285d3bf5e211e80986b85d6e58b7
         </View>
       </Animated.View>
 
@@ -125,19 +143,20 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#282828',
-    marginRight: 8,
+    marginRight: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'flex-end',
+    zIndex: 1,
+  
   },
-  avatarBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#e10600',
+  logoBack: {
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 18,
+    backgroundColor:"#ffffff",
   },
   bubble: {
     borderRadius: 18,

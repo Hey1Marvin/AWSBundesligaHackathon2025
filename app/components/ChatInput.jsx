@@ -66,6 +66,7 @@ const ChatInput = ({ onSend }) => {
               </Text>
             )}
             <TextInput
+<<<<<<< HEAD
   mode="flat"
   placeholder="Ask me anything..."
   placeholderTextColor="rgba(255,255,255,0.6)"
@@ -88,6 +89,29 @@ const ChatInput = ({ onSend }) => {
   }}
 />
 
+=======
+              mode="flat"
+              placeholder="Ask me anything..."
+              placeholderTextColor="rgba(255,255,255,0.6)"
+              value={text}
+              onChangeText={updateText}
+              onKeyPress={onKeyPress}
+              style={styles.textInput}
+              textColor="#FFFFFF"
+              underlineColor="transparent"
+              selectionColor="transparent"
+              multiline={false}
+              theme={{
+                colors: {
+                  text: '#FFFFFF',
+                  placeholder: 'rgba(255,255,255,0.6)',
+                  primary: '#e10600',
+                  background: 'transparent',
+                  underlineColor: 'transparent',
+                }
+              }}
+            />
+>>>>>>> bde7a4bba418285d3bf5e211e80986b85d6e58b7
           </View>
           <View style={styles.divRight}>
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
