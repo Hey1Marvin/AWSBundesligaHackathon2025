@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import ArrowUp from '@/assets/images/icons/ArrowUp';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Import Icons
-import ArrowUp from '@/assets/images/icons/ArrowUp';
 
 const SUGGESTIONS = [
   'Wann beginnt das nächste Spiel?',
@@ -18,22 +14,16 @@ const SUGGESTIONS = [
 ];
 
 const ChatInput = ({ onSend }) => {
-  // Color Handling
   const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';  
-
   const [text, setText] = useState('');
   const [suggestion, setSuggestion] = useState('');
 
   const updateText = (inputText) => {
     setText(inputText);
-
-    // Clear suggestion on newline
     if (inputText.includes('\n')) {
       setSuggestion('');
       return;
     }
-
     if (inputText.length > 0) {
       const match = SUGGESTIONS.find(item =>
         item.toLowerCase().startsWith(inputText.toLowerCase())
@@ -69,7 +59,6 @@ const ChatInput = ({ onSend }) => {
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
-            {/* Ghost suggestion overlay */}
             {(text || suggestion) && (
               <Text style={styles.suggestionOverlay} pointerEvents="none">
                 {text}
@@ -77,26 +66,28 @@ const ChatInput = ({ onSend }) => {
               </Text>
             )}
             <TextInput
-              mode="flat"
-              placeholder="Ask me anything..."
-              placeholderTextColor="rgba(255,255,255,0.6)"
-              value={text}
-              onChangeText={updateText}
-              onKeyPress={onKeyPress}
-              style={styles.textInput}
-              textColor="#FFFFFF"
-              underlineColor="transparent"
-              selectionColor="#e10600"
-              multiline={false}
-              theme={{
-                colors: {
-                  text: '#FFFFFF',
-                  placeholder: 'rgba(255,255,255,0.6)',
-                  primary: '#e10600',
-                  background: 'transparent'
-                }
-              }}
-            />
+  mode="flat"
+  placeholder="Ask me anything..."
+  placeholderTextColor="rgba(255,255,255,0.6)"
+  value={text}
+  onChangeText={updateText}
+  onKeyPress={onKeyPress}
+  style={styles.textInput}
+  textColor="#FFFFFF"
+  underlineColor="transparent"
+  activeUnderlineColor="transparent"  // <-- Add this line
+  selectionColor="#e10600"
+  multiline={false}
+  theme={{
+    colors: {
+      text: '#FFFFFF',
+      placeholder: 'rgba(255,255,255,0.6)',
+      primary: '#e10600',
+      background: 'transparent'
+    }
+  }}
+/>
+
           </View>
           <View style={styles.divRight}>
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
@@ -109,7 +100,6 @@ const ChatInput = ({ onSend }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'transparent',
@@ -131,8 +121,9 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
-    borderWidth: 1.5, // Add border
-    borderColor: '#D20515', // Red border color
+    // Remove the red border by commenting out or deleting these lines:
+    // borderWidth: 1.5,
+    // borderColor: '#D20515',
   },
   suggestionOverlay: {
     position: 'absolute',
@@ -167,7 +158,7 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     paddingHorizontal: 16,
     zIndex: 1, // Ensures the TextInput renders above the overlay
-    color: '#fff', // Text color for visibility
+    color: '#fff',
   },
   sendButton: {
     marginEnd: 20,
@@ -182,5 +173,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 });
+
 
 export default ChatInput;
