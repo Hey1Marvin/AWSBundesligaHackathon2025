@@ -7,7 +7,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import ChatInput from './ChatInput';
 import FAQs from './FAQs';
 
-// AnimatedTypingDot component for the bot's typing indicator
+
+
 const AnimatedTypingDot = ({ delay = 0 }) => {
   const colorScheme = useColorScheme();
   const animation = useRef(new Animated.Value(0)).current;
@@ -127,7 +128,7 @@ const ChatWindow = () => {
 
   // Show FAQs only if no user message has been sent.
   const showFAQs = !messages.some(msg => msg.type === 'user');
-
+  const colorScheme = useColorScheme();
   return (
     <View style={styles.container}>
       <ScrollView 
@@ -147,7 +148,7 @@ const ChatWindow = () => {
         ))}
         {isTyping && (
           <View style={styles.typingContainer}>
-            <View style={styles.typingBubble}>
+            <View style={[styles.typingBubble, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
               <AnimatedTypingDot delay={0} />
               <AnimatedTypingDot delay={200} />
               <AnimatedTypingDot delay={400} />
@@ -198,7 +199,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   typingBubble: {
-    backgroundColor: '#1f1f1f',
     borderRadius: 18,
     paddingHorizontal: 16,
     paddingVertical: 10,
