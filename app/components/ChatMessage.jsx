@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Markdown from 'react-native-markdown-display';
 
 import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
+import ChattingIconUser from '@/assets/images/icons/ChattingIconUser';
+import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga';  
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -61,14 +62,13 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         ]}
       >
         {!isUser && (
-          <View style={[styles.avatarContainer, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
-            <View style={styles.logoBack}>
-              <BundesligaLogo />
-            </View>
-          </View>
+
+          <ChattingIconBundesliga/>
+ 
         )}
 
         <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble]}>
+        
           {/* Render full message using Markdown */}
           <Markdown style={markdownStyles}>
             {message}
@@ -78,11 +78,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
       </Animated.View>
 
       {isUser && (
-        <View style={styles.userAvatarContainer}>
-          <View style={styles.userAvatar}>
-            <Animated.Text style={styles.userInitial}>U</Animated.Text>
-          </View>
-        </View>
+        <ChattingIconUser/>
       )}
     </View>
   );
@@ -157,12 +153,14 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   userBubble: {
-    backgroundColor: '#e10600',
+    backgroundColor: '#D20515',
     borderTopRightRadius: 4,
+    marginHorizontal: 8,
   },
   systemBubble: {
     backgroundColor: '#1f1f1f',
     borderTopLeftRadius: 4,
+    marginHorizontal: 8,
   },
   timestamp: {
     fontSize: 11,

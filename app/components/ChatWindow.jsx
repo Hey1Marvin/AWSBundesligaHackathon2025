@@ -5,10 +5,13 @@ import SoccerBall from '../../assets/images/icons/Ball';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import ChatInput from './ChatInput';
+import FAQs from './FAQs';
+import SoccerBall from '../../assets/images/icons/Ball'; // Adjust the path as needed
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
-
-
-const AnimatedTypingDot = ({ delay = 0}) => {
+// AnimatedTypingDot component for the bot's typing indicator
+const AnimatedTypingDot = ({ delay = 0 }) => {
   const colorScheme = useColorScheme();
   const animation = useRef(new Animated.Value(0)).current;
 
@@ -28,7 +31,7 @@ const AnimatedTypingDot = ({ delay = 0}) => {
         }),
       ])
     ).start();
-  }, []);
+  }, [animation, delay]);
 
   const scale = animation.interpolate({
     inputRange: [0, 1],
@@ -40,80 +43,46 @@ const AnimatedTypingDot = ({ delay = 0}) => {
       style={{ 
         transform: [{ scale }], 
         marginHorizontal: 4,
-        // Wichtig: SVG braucht explizite Höhe/Breite
         height: 16,
-        width: 16
+        width: 16,
       }}
     >
-      {/* Füge key prop hinzu und überprüfe die Icon-Props */}
       <SoccerBall 
         key="soccer-ball" 
         width={16} 
         height={16} 
-        color={Colors[colorScheme ?? 'light'].icon} // Dieselbe Farbe wie die Punkte
+        color={Colors[colorScheme ?? 'light'].icon}
       />
     </Animated.View>
   );
 };
 
-
-
-/*
-const AnimatedTypingDot = ({ delay = 0 }) => {
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scaleAnim, {
-          toValue: 1.2,
-          duration: 500,
-          delay,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnim, {
-          toValue: 0.8,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, [scaleAnim, delay]);
-
-  return (
-    <Animated.View style={[styles.typingDot, { transform: [{ scale: scaleAnim }] }]} />
-  );
-};
-*/
-
-
-
 const ChatWindow = () => {
-  const [messages, setMessages] = useState([
-    { 
-      id: '1', 
-      message: "Willkommen zum Bundesliga AI Chat! Wie kann ich dir heute helfen?", 
-      type: "system",
-      timestamp: new Date(Date.now() - 60000)
-    },
-  ]);
-
+  // No initial messages so that FAQs are visible until a user sends a message.
+  const [messages, setMessages] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
   const scrollViewRef = useRef(null);
 
-  // Auto-scroll beim Aktualisieren der Nachrichten
+  // Auto-scroll when messages update
   useEffect(() => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
   }, [messages]);
 
-  // API-Call beim Absenden einer Nachricht
+  // API call when sending a message.
   const handleSend = async (text) => {
-    // Füge die Nutzer-Nachricht hinzu
-    const userMessage = { id: Date.now().toString(), message: text, type: "user", timestamp: new Date() };
+    // Add the user message.
+    const userMessage = { 
+      id: Date.now().toString(), 
+      message: text, 
+      type: "user", 
+      timestamp: new Date() 
+    };
     setMessages(prev => [...prev, userMessage]);
+    setIsTyping(true);
 
-    // Wähle die URL je nach Plattform (Web: Proxy, Mobile: direkte API)
+    // Choose API URL based on platform.
     const apiUrl = Platform.OS === 'web'
       ? 'http://localhost:3001/proxy/hackaton/chat'
       : 'https://hdeepi3xgi.execute-api.eu-central-1.amazonaws.com/hackaton/chat';
@@ -131,33 +100,46 @@ const ChatWindow = () => {
       }
       const data = await response.json();
       const reply = data?.output?.message?.content[0]?.text;
-
-      // Füge die Bot-Antwort als neue Nachricht hinzu
-      const botMessage = { id: Date.now().toString(), message: reply, type: "system", timestamp: new Date() };
+      
+      // Post the bot reply as a system message.
+      const botMessage = { 
+        id: Date.now().toString(), 
+        message: reply, 
+        type: "system", 
+        timestamp: new Date() 
+      };
       setMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage = { id: Date.now().toString(), message: "Fehler beim Abrufen der Antwort", type: "system", timestamp: new Date() };
+      const errorMessage = { 
+        id: Date.now().toString(), 
+        message: "Fehler beim Abrufen der Antwort", 
+        type: "system", 
+        timestamp: new Date() 
+      };
       setMessages(prev => [...prev, errorMessage]);
+      setIsTyping(false);
     }
   };
 
+  // When an FAQ is clicked, send it as a user message.
+  const handleFAQSelect = (question) => {
+    handleSend(question);
+  };
+
+  // Show FAQs only if no user message has been sent.
+  const showFAQs = !messages.some(msg => msg.type === 'user');
+
   return (
     <View style={styles.container}>
-      {/* Datumstrenner */}
-      <View style={styles.dateDivider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dateText}>Heute</Text>
-        <View style={styles.dividerLine} />
-      </View>
-
-      {/* Nachrichten-Container */}
       <ScrollView 
         ref={scrollViewRef}
         style={styles.messagesContainer}
         contentContainerStyle={styles.messagesContent}
         showsVerticalScrollIndicator={false}
       >
+        {showFAQs && <FAQs onSelect={handleFAQSelect} />}
         {messages.map((msg) => (
           <ChatMessage 
             key={msg.id} 
@@ -166,28 +148,20 @@ const ChatWindow = () => {
             timestamp={msg.timestamp} 
           />
         ))}
-
-      <View style={styles.typingContainer}>
-        <View style={styles.typingBubble}>
-          <AnimatedTypingDot delay={0} />
-          <AnimatedTypingDot delay={200} />
-          <AnimatedTypingDot delay={400} />
-        </View>
-      </View>
+        {isTyping && (
+          <View style={styles.typingContainer}>
+            <View style={styles.typingBubble}>
+              <AnimatedTypingDot delay={0} />
+              <AnimatedTypingDot delay={200} />
+              <AnimatedTypingDot delay={400} />
+            </View>
+          </View>
+        )}
       </ScrollView>
-
-      {/* Typing indicator */}
-
- 
-
-      
-
-      {/* Chat Input */}
       <ChatInput onSend={handleSend} />
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
