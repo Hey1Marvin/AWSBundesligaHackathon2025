@@ -8,7 +8,7 @@ import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga
 // Icons for chat evaluation, copy
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
-import VolumeUp from '@/assets/images/icons/Spiele';
+import VolumeUp from '@/assets/images/icons/speaker';
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
 import CopyIcon from '@/assets/images/icons/Copy';
 import * as Speech from 'expo-speech';
@@ -32,8 +32,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const iconScale = useRef(new Animated.Value(0.8)).current;//for bot message options
 
-  const [thumbsUpActive, setThumbsUpActive] = useState(false);
-  const [thumbsDownActive, setThumbsDownActive] = useState(false);
   const [rating, setRating] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -66,6 +64,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
     }
   };
 
+  // Entfernt die unnötigen States und verwendet nur rating
   const handleThumbs = (type) => {
     setRating(current => current === type ? null : type);
   };
@@ -155,20 +154,19 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
               style={styles.iconButton}
             >
               <ThumbsUp
-                width={20} 
-                height={20} 
+                width={20}
+                height={20}
                 color={rating === 'up' ? activeColor : inactiveColor}
               />
             </TouchableOpacity>
 
-            {/* Daumen Runter */}
             <TouchableOpacity 
               onPress={() => handleThumbs('down')}
               style={styles.iconButton}
             >
               <ThumbsDown
-                width={20} 
-                height={20} 
+                width={20}
+                height={20}
                 color={rating === 'down' ? activeColor : inactiveColor}
               />
             </TouchableOpacity>
