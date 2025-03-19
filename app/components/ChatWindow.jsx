@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, Image, Animated, Platform } from 'react-native';
+import { View, ScrollView, StyleSheet, Animated, Platform } from 'react-native';
 import ChatMessage from './ChatMessage';
 import SoccerBall from '../../assets/images/icons/Ball';
 import { Colors } from '@/constants/Colors';
@@ -156,6 +156,7 @@ const ChatWindow = () => {
           </View>
         )}
       </ScrollView>
+      {/* ChatInput stays fixed at the bottom, ensuring messages never appear behind it */}
       <ChatInput onSend={handleSend} />
     </View>
   );
@@ -189,7 +190,8 @@ const styles = StyleSheet.create({
   },
   messagesContent: {
     paddingVertical: 8,
-    paddingBottom: 20,
+    // Increase bottom padding to ensure chat messages don't get hidden behind ChatInput.
+    paddingBottom: 80,
   },
   typingContainer: {
     paddingHorizontal: 16,

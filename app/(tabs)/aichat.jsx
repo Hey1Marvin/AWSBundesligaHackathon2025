@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Pressable, StatusBar, SafeAreaView, Platform } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 
 import ChatWindow from '../components/ChatWindow';
 import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
@@ -7,26 +7,33 @@ import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-
 export default function AIChatPage() {
   const colorScheme = useColorScheme();
-  const [showInfo, setShowInfo] = useState(false);
   
-
   return (
-    <SafeAreaView style={[styles.safeArea, {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        { backgroundColor: Colors[colorScheme ?? 'light'].background },
+      ]}
+    >
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
+        {/* Header now has no extra padding so its height exactly matches the BundesligaLogo */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
-              <BundesligaLogo/>
+            <BundesligaLogo style={styles.logo} />
           </View>
         </View>
         
-        <View style={[styles.chatContainer,  {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
+        <View
+          style={[
+            styles.chatContainer,
+            { backgroundColor: Colors[colorScheme ?? 'light'].background },
+          ]}
+        >
           <ChatWindow />
         </View>
-        
       </View>
     </SafeAreaView>
   );
@@ -42,15 +49,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   header: {
-    paddingTop: 35,
-    paddingHorizontal: 20,
+    // Remove padding so the header exactly matches the logo's height
     backgroundColor: 'transparent',
   },
   headerContent: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  
+  // Set the logo size here. The header’s height will be determined by this.
+  logo: {
+    height: 80, // adjust this value as needed to make the logo (and header) bigger
+    resizeMode: 'contain',
+  },
   badgeContainer: {
     backgroundColor: '#e10600',
     paddingHorizontal: 8,
@@ -71,4 +81,3 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
 });
-
