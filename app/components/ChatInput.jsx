@@ -1,27 +1,39 @@
 import React, { useState } from 'react';
 import { View, Text, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import ArrowUp from '@/assets/images/icons/ArrowUp';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+// Import Icons
+import ArrowUp from '@/assets/images/icons/ArrowUp';
+
 const SUGGESTIONS = [
-  'Wer ist Torschützenkönig?',
-  'Welches Stadion ist das Kleinste?',
-  'Wo spielt Messi?',
+  'Wann beginnt das nächste Spiel?',
+  'Wie ist der aktuelle Stand?',
+  'Wie kann ich Tickets kaufen?',
+  'Wer ist der Torschützenkönig?',
+  'Zeig mir die Teamstatistiken'
 ];
 
 const ChatInput = ({ onSend }) => {
+  // Color Handling
   const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';  
+
   const [text, setText] = useState('');
   const [suggestion, setSuggestion] = useState('');
 
   const updateText = (inputText) => {
     setText(inputText);
+
+    // Clear suggestion on newline
     if (inputText.includes('\n')) {
       setSuggestion('');
       return;
     }
+
     if (inputText.length > 0) {
       const match = SUGGESTIONS.find(item =>
         item.toLowerCase().startsWith(inputText.toLowerCase())
@@ -32,61 +44,32 @@ const ChatInput = ({ onSend }) => {
     }
   };
 
-  const handleFocus = () => {
-    setIsFocused(true);
-    toggleSuggestions(true);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-    toggleSuggestions(false);
-  };
-
-  const handleSuggestionPress = (suggestedText) => {
-    setText(suggestedText);
-    handleBlur(); // Animation zurückfahren
+  const onKeyPress = (e) => {
+    if (Platform.OS === 'web' && suggestion) {
+      const { key } = e.nativeEvent;
+      if (key === 'Tab' || key === 'ArrowRight') {
+        e.preventDefault();
+        const completedText = text + suggestion;
+        setText(completedText);
+        setSuggestion('');
+      }
+    }
   };
 
   const handleSend = () => {
     if (text.trim()) {
       onSend(text);
       setText('');
-      handleBlur();
+      setSuggestion('');
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* 💬 Animiertes Vorschlags-Karussell */}
-      {isFocused && (
-        <Animated.View
-          style={[
-            styles.suggestionBox,
-            {
-              transform: [
-                {
-                  translateY: slideAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [-100, 0], // Von oben einfahren
-                  }),
-                },
-              ],
-              opacity: fadeAnim, // Für sanftes Ein-/Ausblenden
-            },
-          ]}
-        >
-          {SUGGESTIONS.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => handleSuggestionPress(item)} style={styles.suggestionItem}>
-              <Text style={styles.suggestionText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </Animated.View>
-      )}
-
-      {/* 📩 Eingabefeld & Senden-Button */}
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
+            {/* Ghost suggestion overlay */}
             {(text || suggestion) && (
               <Text style={styles.suggestionOverlay} pointerEvents="none">
                 {text}
@@ -94,29 +77,27 @@ const ChatInput = ({ onSend }) => {
               </Text>
             )}
             <TextInput
-  mode="flat"
-  placeholder="Ask me anything..."
-  placeholderTextColor="rgba(255,255,255,0.6)"
-  value={text}
-  onChangeText={updateText}
-  onKeyPress={onKeyPress}
-  style={styles.textInput}
-  textColor="#FFFFFF"
-  underlineColor="transparent"
-  activeUnderlineColor="transparent"  // <-- Add this line
-  selectionColor="#e10600"
-  multiline={false}
-  theme={{
-    colors: {
-      text: '#FFFFFF',
-      placeholder: 'rgba(255,255,255,0.6)',
-      primary: '#e10600',
-      background: 'transparent'
-    }
-  }}
-/>
-
-             
+              mode="flat"
+              placeholder="Ask me anything..."
+              placeholderTextColor="rgba(255,255,255,0.6)"
+              value={text}
+              onChangeText={updateText}
+              onKeyPress={onKeyPress}
+              style={styles.textInput}
+              textColor="#FFFFFF"
+              underlineColor="transparent"
+              selectionColor="transparent"
+              multiline={false}
+              theme={{
+                colors: {
+                  text: '#FFFFFF',
+                  placeholder: 'rgba(255,255,255,0.6)',
+                  primary: '#e10600',
+                  background: 'transparent',
+                  underlineColor: 'transparent',
+                }
+              }}
+            />
           </View>
           <View style={styles.divRight}>
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
@@ -129,33 +110,13 @@ const ChatInput = ({ onSend }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'transparent',
     padding: 16,
     width: '100%',
     marginBottom: 70,
-  },
-  // 🏆 Animiertes Suggestion-Karussell
-  suggestionBox: {
-    paddingHorizontal: 16,
-    position: 'absolute',
-    top: -120, // Startposition über dem Input
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 1)',
-    borderRadius: 16,
-    paddingVertical: 10,
-    marginBottom: 0,
-  },
-  suggestionItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  suggestionText: {
-    color: '#FFFFFF',
-    fontSize: 16,
   },
   inputRow: {
     flexDirection: 'row',
@@ -163,17 +124,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   inputField: {
-    marginTop:20,
+    flex: 2,
     flexDirection: 'row',
-    alignItems: 'center',
+    position: 'relative',
     borderRadius: 24,
-    height: 50,
+    height: 70,
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
-    // Remove the red border by commenting out or deleting these lines:
-    // borderWidth: 1.5,
-    // borderColor: '#D20515',
+    borderWidth: 1.5, // Add border
+    borderColor: '#D20515', // Red border color
   },
   suggestionOverlay: {
     position: 'absolute',
@@ -182,34 +142,46 @@ const styles = StyleSheet.create({
     right: 0,
     height: 48,
     paddingHorizontal: 16,
-    borderWidth: 2,
-    borderColor: '#D20515',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    fontSize: 16,
+    lineHeight: 48,
+    color: 'rgba(255,255,255,0.3)',
+    textAlignVertical: 'center',
+  },
+  inlineSuggestion: {
+    color: 'rgba(255,255,255,0.3)',
+  },
+  divLeft: {
+    flex: 0.65,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  divRight: {
+    flex: 0.35,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   textInput: {
     flex: 1,
     backgroundColor: 'transparent',
+    height: 48,
     fontSize: 16,
     lineHeight: 48,
     paddingHorizontal: 16,
     zIndex: 1, // Ensures the TextInput renders above the overlay
-    color: '#fff',
+    color: '#fff', // Text color for visibility
   },
   sendButton: {
-    backgroundColor: '#D20515',
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    marginEnd: 20,
+    flex: 2,
     flexDirection: 'row',
+    backgroundColor: '#D20515',
+    width: 100,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 10,
-  },
-  sendText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    marginRight: 5,
+    marginLeft: 12,
   },
 });
-
 
 export default ChatInput;
