@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet, Image, Animated } from 'react-native';
+import React, { useRef, useEffect, useState } from 'react';
+import { View, ScrollView, Text, StyleSheet, Platform } from 'react-native';
 import ChatMessage from './ChatMessage';
 import SoccerBall from '../../assets/images/icons/Ball';
 import { Colors } from '@/constants/Colors';
@@ -86,54 +86,79 @@ const AnimatedTypingDot = ({ delay = 0 }) => {
 
 
 const ChatWindow = ({ messages = [] }) => {
-  const scrollViewRef = useRef(null);
+import ChatInput from './ChatInput';
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  }, [messages]);
-
-  // If no messages are provided, use default sample messages
-  const displayMessages = messages.length > 0 ? messages : [
+const ChatWindow = () => {
+  const [messages, setMessages] = useState([
     { 
       id: '1', 
       message: "Willkommen zum Bundesliga AI Chat! Wie kann ich dir heute helfen?", 
       type: "system",
       timestamp: new Date(Date.now() - 60000)
     },
-    { 
-      id: '2', 
-      message: "Wann ist das nächste Spiel von Bayern München?", 
-      type: "user",
-      timestamp: new Date(Date.now() - 45000)
-    },
-    { 
-      id: '3', 
-      message: "Bayern München spielt am kommenden Samstag um 15:30 Uhr gegen Borussia Dortmund in der Allianz Arena.", 
-      type: "system",
-      timestamp: new Date(Date.now() - 30000)
+  ]);
+
+  const scrollViewRef = useRef(null);
+
+  // Auto-scroll beim Aktualisieren der Nachrichten
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
     }
-  ];
+  }, [messages]);
+
+  // API-Call beim Absenden einer Nachricht
+  const handleSend = async (text) => {
+    // Füge die Nutzer-Nachricht hinzu
+    const userMessage = { id: Date.now().toString(), message: text, type: "user", timestamp: new Date() };
+    setMessages(prev => [...prev, userMessage]);
+
+    // Wähle die URL je nach Plattform (Web: Proxy, Mobile: direkte API)
+    const apiUrl = Platform.OS === 'web'
+      ? 'http://localhost:3001/proxy/hackaton/chat'
+      : 'https://hdeepi3xgi.execute-api.eu-central-1.amazonaws.com/hackaton/chat';
+
+    const promptBody = { prompt: text };
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(promptBody)
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+      const data = await response.json();
+      const reply = data?.output?.message?.content[0]?.text;
+
+      // Füge die Bot-Antwort als neue Nachricht hinzu
+      const botMessage = { id: Date.now().toString(), message: reply, type: "system", timestamp: new Date() };
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage = { id: Date.now().toString(), message: "Fehler beim Abrufen der Antwort", type: "system", timestamp: new Date() };
+      setMessages(prev => [...prev, errorMessage]);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {/* Date Divider */}
+      {/* Datumstrenner */}
       <View style={styles.dateDivider}>
-        <View style={styles.dividerLine}></View>
+        <View style={styles.dividerLine} />
         <Text style={styles.dateText}>Heute</Text>
-        <View style={styles.dividerLine}></View>
+        <View style={styles.dividerLine} />
       </View>
 
-      {/* Messages Container */}
+      {/* Nachrichten-Container */}
       <ScrollView 
         ref={scrollViewRef}
         style={styles.messagesContainer}
         contentContainerStyle={styles.messagesContent}
         showsVerticalScrollIndicator={false}
       >
-        {displayMessages.map((msg) => (
+        {messages.map((msg) => (
           <ChatMessage 
             key={msg.id} 
             message={msg.message} 
@@ -141,19 +166,14 @@ const ChatWindow = ({ messages = [] }) => {
             timestamp={msg.timestamp} 
           />
         ))}
-        
-        {/* Typing indicator */}
-        <View style={styles.typingContainer}>
-          <View style={styles.typingBubble}>
-            <AnimatedTypingDot delay={0} />
-            <AnimatedTypingDot delay={200} />
-            <AnimatedTypingDot delay={400} />
-          </View>
-        </View>
       </ScrollView>
+
+      {/* Chat Input */}
+      <ChatInput onSend={handleSend} />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
