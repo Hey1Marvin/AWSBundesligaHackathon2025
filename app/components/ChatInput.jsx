@@ -221,6 +221,29 @@ const ChatInput = ({ onSend }) => {
           <View style={styles.divLeft}>
             {/* We're using a different approach here - a transparent input with an overlay */}
             <TextInput
+  mode="flat"
+  placeholder="Ask me anything..."
+  placeholderTextColor={Colors[colorScheme ?? 'light'].tint }
+  value={text}
+  onChangeText={updateText}
+  onKeyPress={onKeyPress}
+  style={styles.textInput}
+  textColor="#FFFFFF"
+  underlineColor="transparent"
+  activeUnderlineColor="transparent"  // <-- Add this line
+  selectionColor="#e10600"
+  multiline={false}
+  theme={{
+    colors: {
+      text: '#FFFFFF',
+      placeholder: 'rgba(255,255,255,0.6)',
+      primary: '#e10600',
+      background: 'transparent'
+    }
+  }}
+/>
+
+             
               ref={inputRef}
               mode="flat"
               placeholder="Frag mich was..."

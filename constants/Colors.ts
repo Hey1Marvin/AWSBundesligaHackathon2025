@@ -12,6 +12,7 @@ export const Colors = {
     background: '#E9EBED',
     tint: tintColorLight,
     eleColor: '#fff',
+    navbar: '#fff',
 
     mainRed: bundesligaRot,
     answerBack: '#C9CCCF',
@@ -25,9 +26,10 @@ export const Colors = {
     tabIconSelected: tintColorLight,
   },
   dark: {
-    background: '000E14',
+    background: '#000E14',
     tint: tintColorDark,
     eleColor: '#191E24',
+    navbar: '#34383C',
 
     mainRed: bundesligaRot,
     answerBack: '#191E24',
