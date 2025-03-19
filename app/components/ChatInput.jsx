@@ -66,21 +66,21 @@ const ChatInput = ({ onSend }) => {
               </Text>
             )}
             <TextInput
-  mode="flat"
+   mode="flat"
   placeholder="Ask me anything..."
   placeholderTextColor={Colors[colorScheme ?? 'light'].tint }
   value={text}
   onChangeText={updateText}
   onKeyPress={onKeyPress}
-  style={styles.textInput}
-  textColor="#FFFFFF"
+  style={[styles.textInput,  {color: Colors[colorScheme ?? 'light'].tint}, {
+    textColor: Colors[colorScheme ?? 'light'].tint}]}
   underlineColor="transparent"
-  activeUnderlineColor="transparent"  // <-- Add this line
-  selectionColor="#e10600"
+  activeUnderlineColor="transparent"  
+  selectionColor='#D20515'
   multiline={false}
   theme={{
     colors: {
-      text: '#FFFFFF',
+      text: '#ffff',
       placeholder: 'rgba(255,255,255,0.6)',
       primary: '#e10600',
       background: 'transparent'
@@ -122,9 +122,8 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
-    // Remove the red border by commenting out or deleting these lines:
-    // borderWidth: 1.5,
-    // borderColor: '#D20515',
+    borderColor: '#D20515',
+    borderWidth: 1.5,
   },
   suggestionOverlay: {
     position: 'absolute',
@@ -142,12 +141,12 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.3)',
   },
   divLeft: {
-    flex: 0.65,
+    flex: Platform.OS === 'web' ? 0.9 : 0.65, 
     flexDirection: 'row',
     alignItems: 'center',
   },
   divRight: {
-    flex: 0.35,
+    flex: Platform.OS === 'web' ? 0.1 : 0.35, 
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -159,15 +158,14 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     paddingHorizontal: 16,
     zIndex: 1, // Ensures the TextInput renders above the overlay
-    color: '#fff',
   },
   sendButton: {
     marginEnd: 20,
     flex: 2,
     flexDirection: 'row',
     backgroundColor: '#D20515',
-    width: 100,
-    height: 48,
+    width: 10,
+    height:48,
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',

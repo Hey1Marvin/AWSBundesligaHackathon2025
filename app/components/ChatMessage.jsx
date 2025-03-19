@@ -62,18 +62,27 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         ]}
       >
         {!isUser && (
-
           <ChattingIconBundesliga/>
- 
         )}
 
-        <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble]}>
-        
+        <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble, { backgroundColor: isUser ? '#D20515' : Colors[colorScheme ?? 'light'].answerBack }]}>
           {/* Render full message using Markdown */}
-          <Markdown style={markdownStyles}>
+          <Markdown
+            style={{
+              body: {
+                ...markdownStyles.body,
+                color: isUser ? '#FFFFFF' : Colors[colorScheme ?? 'light'].answerTint,
+              },
+              heading1: markdownStyles.heading1,
+              link: markdownStyles.link,
+            }}
+          >
             {message}
           </Markdown>
-          <Animated.Text style={styles.timestamp}>{formattedTime}</Animated.Text>
+          <Animated.Text style={[styles.timestamp, 
+          {
+            color: isUser ? '#FFFFFF' : Colors[colorScheme ?? 'light'].tint,
+          }]}>{formattedTime}</Animated.Text>
         </View>
       </Animated.View>
 
@@ -88,7 +97,6 @@ const markdownStyles = {
   body: {
     fontSize: 16,
     lineHeight: 22,
-    color: '#ffffff',
   },
   heading1: {
     fontSize: 22,
@@ -113,7 +121,6 @@ const styles = StyleSheet.create({
   systemContainer: {
     justifyContent: 'flex-start',
   },
-  // Limit message width to 70% of screen width
   messageWrapper: {
     flexDirection: 'row',
     maxWidth: Dimensions.get('window').width * 0.7,
@@ -123,23 +130,6 @@ const styles = StyleSheet.create({
   },
   systemMessageWrapper: {
     justifyContent: 'flex-start',
-  },
-  avatarContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginRight: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  logoBack: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 40,
-    height: 40,
-    borderRadius: 18,
-    backgroundColor: "#ffffff",
   },
   bubble: {
     borderRadius: 18,
@@ -151,6 +141,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 3,
     flexShrink: 1,
+    zIndex: 0,
   },
   userBubble: {
     backgroundColor: '#D20515',
@@ -158,32 +149,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   systemBubble: {
-    backgroundColor: '#1f1f1f',
     borderTopLeftRadius: 4,
     marginHorizontal: 8,
   },
   timestamp: {
+    color:'#fff',
     fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.6)',
     marginTop: 8,
     alignSelf: 'flex-end',
-  },
-  userAvatarContainer: {
-    marginLeft: 8,
-    alignSelf: 'flex-end',
-  },
-  userAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#1f1f1f',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  userInitial: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
 });
 

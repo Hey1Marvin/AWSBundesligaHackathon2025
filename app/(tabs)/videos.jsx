@@ -9,7 +9,7 @@ const app = () => {
   const colorScheme = useColorScheme();
   return (
     <View style={[styles.container,  {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
-        <Text style={styles.text}>Videos Tab</Text>
+        <Text style={[styles.text,  {color: Colors[colorScheme ?? 'light'].tint}]}>Videos Tab</Text>
     </View>
   )
 }
@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   text:{
-    color:'white',
     fontSize:42,
     fontWeight: 'bold',
     textAlign:'center',
