@@ -1,13 +1,14 @@
 import * as React from "react"
 import { SvgProps, Svg, G, Path, Defs, ClipPath} from "react-native-svg"
-const Videos = ({ color, ...props }: { color: string } & SvgProps) => (
+const Videos = ({ color, width = 25, height = 25, ...props }: { color: string } & SvgProps) => (
   <Svg
-    width={25}
-    height={25}
+    width={width}
+    height={height}
+    viewBox="0 0 25 25"
     fill="none"
     {...props}
   >
-    <G clipPath="url(#a)">
+    <G >
       <Path
         fill={color}
         fillRule="evenodd"

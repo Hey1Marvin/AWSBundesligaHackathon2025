@@ -1,14 +1,18 @@
 import * as React from "react"
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
-const BundesligaLogo =  ({ color, ...props }: { color: string } & SvgProps) => (
+const BundesligaLogo =  ({ color, 
+  width = 39, 
+  height = 39, 
+  ...props  }: { color: string } & SvgProps) => (
   <Svg
-    width={39}
-    height={39}
+  width={width}
+  height={height}
+  viewBox="0 0 39 39"
     fill="none"
     {...props}
   >
     <Ellipse cx={19.5} cy={18.5} fill="#D20515" rx={19.5} ry={18.5} />
-    <G clipPath="url(#a)">
+    <G >
       <Path fill="none" d="M33.965 7h-28v24h28V7Z" />
       <Path fill="#D20515" d="M33.965 7h-28v24h28V7Z" />
       <Path

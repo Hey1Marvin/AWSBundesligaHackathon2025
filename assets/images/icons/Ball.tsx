@@ -1,13 +1,15 @@
 import * as React from "react"
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
-const Ball =  ({ color, ...props }: { color: string } & SvgProps) => (
+const Ball = ({ color, width, height, ...props }: { color: string } & SvgProps) => (
   <Svg
-    width={24}
-    height={24}
+    width={width}  // Größe jetzt dynamisch
+    height={height}
+    viewBox="0 0 24 24"  // WICHTIG: Behält das ursprüngliche Koordinatensystem bei
     fill="none"
     {...props}
   >
-    <G clipPath="url(#a)">
+    {/* ClipPath entfernen oder anpassen */}
+    <G>
       <Path
         fill={color}
         fillRule="evenodd"
@@ -15,11 +17,6 @@ const Ball =  ({ color, ...props }: { color: string } & SvgProps) => (
         clipRule="evenodd"
       />
     </G>
-    <Defs>
-      <ClipPath id="a">
-        <Path fill={color} d="M0 0h24v24H0z" />
-      </ClipPath>
-    </Defs>
   </Svg>
 )
 export default Ball

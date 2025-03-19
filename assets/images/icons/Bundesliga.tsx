@@ -1,13 +1,17 @@
 import * as React from "react"
 import { SvgProps, Svg, G, Path, Defs, ClipPath} from "react-native-svg"
-const Bundesliga = ({ color, ...props }: { color: string } & SvgProps) => (
+const Bundesliga = ({ color, 
+  width = 25, 
+  height = 25, 
+  ...props  }: { color: string } & SvgProps) => (
   <Svg
-    width={25}
-    height={25}
+  width={width}
+  height={height}
+  viewBox="0 0 25 25"
     fill="none"
     {...props}
   >
-    <G clipPath="url(#a)">
+    <G >
       <Path
         fill={color}
         fillRule="evenodd"
@@ -15,11 +19,7 @@ const Bundesliga = ({ color, ...props }: { color: string } & SvgProps) => (
         clipRule="evenodd"
       />
     </G>
-    <Defs>
-      <ClipPath id="a">
-        <Path fill={color} d="M0 0h25v25H0z" />
-      </ClipPath>
-    </Defs>
+    
   </Svg>
 )
 export default Bundesliga

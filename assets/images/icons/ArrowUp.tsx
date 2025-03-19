@@ -1,13 +1,17 @@
 import * as React from "react"
 import { SvgProps, Svg, G, Path, Defs, ClipPath} from "react-native-svg"
-const ArrowUp = ({ color, ...props }: { color: string } & SvgProps) => (
+const ArrowUp = ({ color, 
+  width = 21, 
+  height = 21, 
+  ...props  }: { color: string } & SvgProps) => (
   <Svg
-    width={21}
-    height={21}
+  width={width}
+  height={height}
+  viewBox="0 0 21 21"
     fill="none"
     {...props}
   >
-    <G clipPath="url(#a)">
+    <G >
       <Path
         fill="#fff"
         fillRule="evenodd"

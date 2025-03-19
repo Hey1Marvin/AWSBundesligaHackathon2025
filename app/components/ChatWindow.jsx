@@ -1,7 +1,62 @@
 import React, { useRef, useEffect } from 'react';
 import { View, ScrollView, Text, StyleSheet, Image, Animated } from 'react-native';
 import ChatMessage from './ChatMessage';
+import SoccerBall from '../../assets/images/icons/Ball';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
+
+const AnimatedTypingDot = ({ delay = 0}) => {
+  const colorScheme = useColorScheme();
+  const animation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.delay(delay),
+        Animated.timing(animation, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animation, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  const scale = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.8, 1.2],
+  });
+
+  return (
+    <Animated.View 
+      style={{ 
+        transform: [{ scale }], 
+        marginHorizontal: 4,
+        // Wichtig: SVG braucht explizite Höhe/Breite
+        height: 16,
+        width: 16
+      }}
+    >
+      {/* Füge key prop hinzu und überprüfe die Icon-Props */}
+      <SoccerBall 
+        key="soccer-ball" 
+        width={16} 
+        height={16} 
+        color={Colors[colorScheme ?? 'light'].icon} // Dieselbe Farbe wie die Punkte
+      />
+    </Animated.View>
+  );
+};
+
+
+
+/*
 const AnimatedTypingDot = ({ delay = 0 }) => {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
 
@@ -27,6 +82,8 @@ const AnimatedTypingDot = ({ delay = 0 }) => {
     <Animated.View style={[styles.typingDot, { transform: [{ scale: scaleAnim }] }]} />
   );
 };
+*/
+
 
 const ChatWindow = ({ messages = [] }) => {
   const scrollViewRef = useRef(null);

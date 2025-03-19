@@ -12,6 +12,7 @@ import Videos from '@/assets/images/icons/Videos';
 import Tabelle from '@/assets/images/icons/Tabelle';
 import Statistiken from '@/assets/images/icons/Statistiken';
 import AIChat from '@/assets/images/icons/AIChat';
+import Ball from '@/assets/images/icons/Ball';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -37,7 +38,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Bundesliga',
-          tabBarIcon: () => <Bundesliga color={Colors[colorScheme ?? 'light'].icon}/>,
+          tabBarIcon: () => <Bundesliga width= {24} height = {24} color={Colors[colorScheme ?? 'light'].icon }/>,
         }}
       />
       <Tabs.Screen
@@ -48,7 +49,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="statistiken"
+        name="videos"
         options={{
           title: 'Videos',
           tabBarIcon: () => <Videos color={Colors[colorScheme ?? 'light'].icon}/>,
@@ -62,7 +63,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="videos"
+        name="statistiken"
         options={{
           title: 'Statistiken',
           tabBarIcon: () => <Statistiken color={Colors[colorScheme ?? 'light'].icon}/>,
