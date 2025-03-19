@@ -6,9 +6,8 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import ChatInput from './ChatInput';
 import FAQs from './FAQs';
-import SoccerBall from '../../assets/images/icons/Ball'; // Adjust the path as needed
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+
+
 
 // AnimatedTypingDot component for the bot's typing indicator
 const AnimatedTypingDot = ({ delay = 0 }) => {
