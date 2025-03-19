@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "welcome",
-    "slug": "welcome",
+    "name": "Bundesliga",
+    "slug": "Bundesliga",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/bundesliga_logo.png",
@@ -32,7 +32,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

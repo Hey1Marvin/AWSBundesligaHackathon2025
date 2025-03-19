@@ -1,15 +1,21 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
-
+import { Platform, Image } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+import Bundesliga from '@/assets/images/icons/Bundesliga';
+import Spiele from '@/assets/images/icons/Spiele';
+import Videos from '@/assets/images/icons/Videos';
+import Tabelle from '@/assets/images/icons/Tabelle';
+import Statistiken from '@/assets/images/icons/Statistiken';
+import AIChat from '@/assets/images/icons/AIChat';
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   return (
     <Tabs
@@ -19,61 +25,57 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarStyle: {
+          height:70,
+          backgroundColor: Colors[colorScheme ?? 'light'].eleColor,
+          position: "absolute",
+          bottom: 0, // Tab Bar an der unteren Seite fixieren
+          marginBottom: 0, // Verschiebt die Tab Bar um 2 Pixel nach oben
+        }
+      }}
+    >
       <Tabs.Screen
-        name="bundesliga"
+        name="index"
         options={{
           title: 'Bundesliga',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: () => <Bundesliga color={Colors[colorScheme ?? 'light'].icon}/>,
         }}
       />
       <Tabs.Screen
         name="spiele"
         options={{
           title: 'Spiele',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: () => <Spiele color={Colors[colorScheme ?? 'light'].icon}/>,
         }}
       />
-
       <Tabs.Screen
         name="videos"
         options={{
           title: 'Videos',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: () => <Videos color={Colors[colorScheme ?? 'light'].icon}/>,
         }}
       />
-
       <Tabs.Screen
         name="tabelle"
         options={{
           title: 'Tabelle',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: () => <Tabelle color={Colors[colorScheme ?? 'light'].icon}/>,
         }}
       />
-
       <Tabs.Screen
         name="statistiken"
         options={{
           title: 'Statistiken',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: () => <Statistiken color={Colors[colorScheme ?? 'light'].icon}/>,
         }}
       />
-
-    <Tabs.Screen
+      <Tabs.Screen
         name="aichat"
         options={{
           title: 'AI-Chat',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: () => <AIChat color={Colors[colorScheme ?? 'light'].icon}/>,
         }}
       />
-
     </Tabs>
   );
 }
