@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router'
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const app = () => {
+  const colorScheme = useColorScheme();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,  {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
         <Text style={styles.text}>Spiele Tab</Text>
     </View>
   )
@@ -24,6 +27,5 @@ const styles = StyleSheet.create({
     fontSize:42,
     fontWeight: 'bold',
     textAlign:'center',
-    backgroundColor:'rgba(0,0,0, 0.5)',
   },
 });

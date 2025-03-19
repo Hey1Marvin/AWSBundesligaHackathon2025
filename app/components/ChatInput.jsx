@@ -68,7 +68,7 @@ const ChatInput = ({ onSend }) => {
             <TextInput
   mode="flat"
   placeholder="Ask me anything..."
-  placeholderTextColor="rgba(255,255,255,0.6)"
+  placeholderTextColor={Colors[colorScheme ?? 'light'].tint }
   value={text}
   onChangeText={updateText}
   onKeyPress={onKeyPress}

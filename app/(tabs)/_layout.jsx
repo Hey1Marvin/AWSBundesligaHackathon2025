@@ -27,7 +27,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: {
           height:70,
-          backgroundColor: Colors[colorScheme ?? 'light'].eleColor,
+          backgroundColor: Colors[colorScheme ?? 'light'].navbar,
           position: "absolute",
           bottom: 0, // Tab Bar an der unteren Seite fixieren
           marginBottom: 0, // Verschiebt die Tab Bar um 2 Pixel nach oben

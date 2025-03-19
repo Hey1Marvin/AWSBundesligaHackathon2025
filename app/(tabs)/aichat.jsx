@@ -4,12 +4,17 @@ import { View, Text, StyleSheet, Image, Pressable, StatusBar, SafeAreaView, Plat
 import ChatWindow from '../components/ChatWindow';
 import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
 
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+
+
 export default function AIChatPage() {
+  const colorScheme = useColorScheme();
   const [showInfo, setShowInfo] = useState(false);
   
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
         <View style={styles.header}>
@@ -18,7 +23,7 @@ export default function AIChatPage() {
           </View>
         </View>
         
-        <View style={styles.chatContainer}>
+        <View style={[styles.chatContainer,  {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
           <ChatWindow />
         </View>
         
