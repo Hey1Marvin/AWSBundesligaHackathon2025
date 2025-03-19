@@ -1,29 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, Animated, Dimensions, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Markdown from 'react-native-markdown-display';
 
 import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { height } from '@mui/system';
 
 const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   // Color Handling
   const colorScheme = useColorScheme();
-
   const isUser = type === 'user';
   const formattedTime = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // Truncate long messages for preview
-  const shouldTruncate = message.length > 200;
-  const displayMessage = shouldTruncate ? `${message.substring(0, 200)}...` : message;
-
-  // Animated values for message bubble
+  // Animated values for smooth appearance
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
-
-  // Animated value for system avatar badge pulsation
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -40,7 +33,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
       }),
     ]).start();
 
-    // Only for system messages: a subtle pulsating badge effect
     if (!isUser) {
       Animated.loop(
         Animated.sequence([
@@ -70,31 +62,47 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
       >
         {!isUser && (
           <View style={[styles.avatarContainer, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
-          <View style ={styles.logoBack}>
-            <BundesligaLogo />
-          </View>
+            <View style={styles.logoBack}>
+              <BundesligaLogo />
+            </View>
           </View>
         )}
 
         <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble]}>
-          <Text style={[styles.message, isUser ? styles.userText : styles.systemText]}>
-            {displayMessage}
-          </Text>
-          <View style={styles.messageFooter}>
-            <Text style={styles.timestamp}>{formattedTime}</Text>
-          </View>
+          {/* Render full message using Markdown */}
+          <Markdown style={markdownStyles}>
+            {message}
+          </Markdown>
+          <Animated.Text style={styles.timestamp}>{formattedTime}</Animated.Text>
         </View>
       </Animated.View>
 
       {isUser && (
         <View style={styles.userAvatarContainer}>
           <View style={styles.userAvatar}>
-            <Text style={styles.userInitial}>U</Text>
+            <Animated.Text style={styles.userInitial}>U</Animated.Text>
           </View>
         </View>
       )}
     </View>
   );
+};
+
+const markdownStyles = {
+  body: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: '#ffffff',
+  },
+  heading1: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  link: {
+    color: '#e10600',
+    textDecorationLine: 'underline',
+  },
 };
 
 const styles = StyleSheet.create({
@@ -109,9 +117,10 @@ const styles = StyleSheet.create({
   systemContainer: {
     justifyContent: 'flex-start',
   },
+  // Limit message width to 70% of screen width
   messageWrapper: {
     flexDirection: 'row',
-    maxWidth: '80%',
+    maxWidth: Dimensions.get('window').width * 0.7,
   },
   userMessageWrapper: {
     justifyContent: 'flex-end',
@@ -127,16 +136,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-  
   },
   logoBack: {
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: 40,
     height: 40,
     borderRadius: 18,
-    backgroundColor:"#ffffff",
+    backgroundColor: "#ffffff",
+  },
+  bubble: {
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    flexShrink: 1,
+  },
+  userBubble: {
+    backgroundColor: '#e10600',
+    borderTopRightRadius: 4,
+  },
+  systemBubble: {
+    backgroundColor: '#1f1f1f',
+    borderTopLeftRadius: 4,
+  },
+  timestamp: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginTop: 8,
+    alignSelf: 'flex-end',
   },
   userAvatarContainer: {
     marginLeft: 8,
@@ -154,48 +186,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  bubble: {
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-  },
-  userBubble: {
-    backgroundColor: '#e10600',
-    borderTopRightRadius: 4,
-  },
-  systemBubble: {
-    backgroundColor: '#1f1f1f',
-    borderTopLeftRadius: 4,
-  },
-  message: {
-    fontSize: 16,
-    lineHeight: 22,
-  },
-  userText: {
-    color: '#ffffff',
-  },
-  systemText: {
-    color: '#ffffff',
-  },
-  messageFooter: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  timestamp: {
-    fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.6)',
-    marginRight: 4,
-  },
-  readStatus: {
-    marginLeft: 2,
   },
 });
 
