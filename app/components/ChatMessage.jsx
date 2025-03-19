@@ -6,63 +6,17 @@ import ChattingIconUser from '@/assets/images/icons/ChattingIconUser';
 import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga';  
 
 // Icons for chat evaluation, copy
-//import ThumbsUp from '@/assets/images/icons/ArrowUp';
-//import ThumbsDown from '@/assets/images/icons/Statistiken';
-//import VolumeUp from '@/assets/images/icons/Spiele';
+import ThumbsUp from '@/assets/images/icons/Toor';
+import ThumbsDown from '@/assets/images/icons/RoteKarte';
+import VolumeUp from '@/assets/images/icons/Spiele';
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
-//import CopyIcon from '@/assets/images/icons/Copy';
+import CopyIcon from '@/assets/images/icons/Copy';
 import * as Speech from 'expo-speech';
 import * as Clipboard from 'expo-clipboard';
 
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Icon Components
-const ThumbsUp = ({ filled }) => (
-  <Svg width={24} height={24}>
-    <Path
-      fill={filled ? '#4CAF50' : 'transparent'}
-      stroke={filled ? '#4CAF50' : '#666'}
-      strokeWidth={1.5}
-      d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"
-    />
-  </Svg>
-);
-
-const ThumbsDown = ({ filled }) => (
-  <Svg width={24} height={24}>
-    <Path
-      fill={filled ? '#F44336' : 'transparent'}
-      stroke={filled ? '#F44336' : '#666'}
-      strokeWidth={1.5}
-      d="M11 5h8v14h-8l-4-4v-6l4-4zm-2 0H3v14h6l4-4v-6l-4-4z"
-    />
-  </Svg>
-);
-
-const VolumeUp = ({ filled }) => (
-  <Svg width={24} height={24}>
-    <Path
-      fill={filled ? '#2196F3' : 'transparent'}
-      stroke={filled ? '#2196F3' : '#666'}
-      strokeWidth={1.5}
-      d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
-    />
-  </Svg>
-);
-
-const CopyIcon = ({ filled }) => (
-  <Svg width={24} height={24}>
-    <Path
-      fill={filled ? '#FFC107' : 'transparent'}
-      stroke={filled ? '#FFC107' : '#666'}
-      strokeWidth={1.5}
-      d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
-    />
-  </Svg>
-);
-
 
 
 
@@ -80,6 +34,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
 
   const [thumbsUpActive, setThumbsUpActive] = useState(false);
   const [thumbsDownActive, setThumbsDownActive] = useState(false);
+  const [rating, setRating] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -109,6 +64,10 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
       });
       setIsSpeaking(true);
     }
+  };
+
+  const handleThumbs = (type) => {
+    setRating(current => current === type ? null : type);
   };
 
   useEffect(() => {
@@ -191,22 +150,29 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         {/* Icons unterhalb der Bubble */}
         {!isUser && (
           <View style={styles.actionsContainer}>
-            <TouchableOpacity onPress={() => setThumbsUpActive(!thumbsUpActive)}>
-              <ThumbsUp 
-                width={16} 
-                height={16} 
-                color={thumbsUpActive ? activeColor : inactiveColor}
+            <TouchableOpacity 
+              onPress={() => handleThumbs('up')}
+              style={styles.iconButton}
+            >
+              <ThumbsUp
+                width={20} 
+                height={20} 
+                color={rating === 'up' ? activeColor : inactiveColor}
               />
             </TouchableOpacity>
-            
-            <TouchableOpacity onPress={() => setThumbsDownActive(!thumbsDownActive)}>
-              <ThumbsDown 
-                width={16} 
-                height={16} 
-                color={thumbsDownActive ? activeColor : inactiveColor}
+
+            {/* Daumen Runter */}
+            <TouchableOpacity 
+              onPress={() => handleThumbs('down')}
+              style={styles.iconButton}
+            >
+              <ThumbsDown
+                width={20} 
+                height={20} 
+                color={rating === 'down' ? activeColor : inactiveColor}
               />
             </TouchableOpacity>
-            
+                
             <TouchableOpacity onPress={handleReadAloud}>
               <VolumeUp 
                 width={16} 
