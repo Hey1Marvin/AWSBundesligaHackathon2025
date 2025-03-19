@@ -86,14 +86,15 @@ const ChatInput = ({ onSend }) => {
               style={styles.textInput}
               textColor="#FFFFFF"
               underlineColor="transparent"
-              selectionColor="#e10600"
+              selectionColor="transparent"
               multiline={false}
               theme={{
                 colors: {
                   text: '#FFFFFF',
                   placeholder: 'rgba(255,255,255,0.6)',
                   primary: '#e10600',
-                  background: 'transparent'
+                  background: 'transparent',
+                  underlineColor: 'transparent',
                 }
               }}
             />
