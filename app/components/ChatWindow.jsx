@@ -101,7 +101,7 @@ const ChatWindow = ({ messages = [] }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0d0d0d',
+    backgroundColor: 'transparent',
     flexDirection: 'column',
   },
   dateDivider: {

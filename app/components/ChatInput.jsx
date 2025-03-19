@@ -3,6 +3,12 @@ import { View, Text, Platform, StyleSheet, TouchableOpacity } from 'react-native
 import { TextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+
+// Import Icons
+import ArrowUp from '@/assets/images/icons/ArrowUp';
+
 const SUGGESTIONS = [
   'Wann beginnt das nächste Spiel?',
   'Wie ist der aktuelle Stand?',
@@ -12,6 +18,10 @@ const SUGGESTIONS = [
 ];
 
 const ChatInput = ({ onSend }) => {
+  // Color Handling
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';  
+
   const [text, setText] = useState('');
   const [suggestion, setSuggestion] = useState('');
 
@@ -57,8 +67,8 @@ const ChatInput = ({ onSend }) => {
   return (
     <View style={styles.container}>
       <View style={styles.inputRow}>
-        <View style={styles.inputWrapper}>
-          <View style={styles.inputField}>
+        <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
+          <View style={styles.divLeft}>
             {/* Ghost suggestion overlay */}
             {(text || suggestion) && (
               <Text style={styles.suggestionOverlay} pointerEvents="none">
@@ -68,7 +78,7 @@ const ChatInput = ({ onSend }) => {
             )}
             <TextInput
               mode="flat"
-              placeholder="Nachricht senden..."
+              placeholder="Ask me anything..."
               placeholderTextColor="rgba(255,255,255,0.6)"
               value={text}
               onChangeText={updateText}
@@ -88,10 +98,13 @@ const ChatInput = ({ onSend }) => {
               }}
             />
           </View>
+          <View style={styles.divRight}>
+            <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
+              <Text style={{ color: '#FFFFFF', fontSize: 16 }}>Send</Text>
+              <ArrowUp color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
-          <Icon name="send" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -99,27 +112,27 @@ const ChatInput = ({ onSend }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: 'transparent',
     padding: 16,
     width: '100%',
-    borderTopWidth: 1,
-    borderColor: '#333',
+    marginBottom: 70,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  inputWrapper: {
-    flex: 1,
+    width: '100%',
   },
   inputField: {
+    flex: 2,
+    flexDirection: 'row',
     position: 'relative',
-    backgroundColor: '#121212',
     borderRadius: 24,
-    height: 48,
+    height: 70,
+    width: '100%',
     justifyContent: 'center',
-    // We remove extra horizontal padding here to let both layers use their own padding
     paddingHorizontal: 0,
+    borderWidth: 1.5, // Add border
+    borderColor: '#D20515', // Red border color
   },
   suggestionOverlay: {
     position: 'absolute',
@@ -136,6 +149,16 @@ const styles = StyleSheet.create({
   inlineSuggestion: {
     color: 'rgba(255,255,255,0.3)',
   },
+  divLeft: {
+    flex: 0.65,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  divRight: {
+    flex: 0.35,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   textInput: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -144,10 +167,14 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     paddingHorizontal: 16,
     zIndex: 1, // Ensures the TextInput renders above the overlay
+    color: '#fff', // Text color for visibility
   },
   sendButton: {
-    backgroundColor: '#e10600',
-    width: 48,
+    marginEnd: 20,
+    flex: 2,
+    flexDirection: 'row',
+    backgroundColor: '#D20515',
+    width: 100,
     height: 48,
     borderRadius: 24,
     justifyContent: 'center',

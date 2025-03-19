@@ -24,7 +24,6 @@ export default function TabLayout() {
         tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: {
           height:70,
           backgroundColor: Colors[colorScheme ?? 'light'].eleColor,
