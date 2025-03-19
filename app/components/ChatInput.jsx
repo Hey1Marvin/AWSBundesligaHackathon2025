@@ -4,6 +4,8 @@ import { TextInput } from 'react-native-paper';
 import ArrowUp from '@/assets/images/icons/ArrowUp';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 
 // Erweitertes Dictionary mit Kategorien und Gewichtungen
 const SMART_DICTIONARY = {
@@ -47,6 +49,7 @@ const ChatInput = ({ onSend }) => {
   const [userContext, setUserContext] = useState({ categories: {} });
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const inputRef = useRef(null);
+  const insets = useSafeAreaInsets();
 
   // Aktuelle Kategorie bestimmen basierend auf Kontext
   const getCurrentCategory = (inputText) => {
@@ -215,40 +218,13 @@ const ChatInput = ({ onSend }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[
+      styles.container, 
+      { paddingBottom: Math.max(16, insets.bottom) }
+    ]}>
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
-            {(text || suggestion) && (
-              <Text style={styles.suggestionOverlay} pointerEvents="none">
-                {text}
-                <Text style={styles.inlineSuggestion}>{suggestion}</Text>
-              </Text>
-            )}
-            <TextInput
-   mode="flat"
-  placeholder="Ask me anything..."
-  placeholderTextColor={Colors[colorScheme ?? 'light'].tint }
-  value={text}
-  onChangeText={updateText}
-  onKeyPress={onKeyPress}
-  style={[styles.textInput,  {color: Colors[colorScheme ?? 'light'].tint}, {
-    textColor: Colors[colorScheme ?? 'light'].tint}]}
-  underlineColor="transparent"
-  activeUnderlineColor="transparent"  
-  selectionColor='#D20515'
-  multiline={false}
-  theme={{
-    colors: {
-      text: '#ffff',
-      placeholder: 'rgba(255,255,255,0.6)',
-      primary: '#e10600',
-      background: 'transparent'
-    }
-  }}
-/>
-
-             
             <View style={styles.inputContainer}>
               <TextInput
                 ref={inputRef}
@@ -291,8 +267,8 @@ const ChatInput = ({ onSend }) => {
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
-              <Text style={{ color: '#FFFFFF', fontSize: 16 }}>Send</Text>
-              <ArrowUp color="#FFFFFF" />
+              <Text style={{ color: '#FFFFFF', fontSize: 16, marginRight: 4 }}>Send</Text>
+              <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
           </View>
         </View>
@@ -303,10 +279,14 @@ const ChatInput = ({ onSend }) => {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: 'transparent',
     padding: 16,
     width: '100%',
-    marginBottom: 70,
+    zIndex: 100,
   },
   inputRow: {
     flexDirection: 'row',
@@ -322,32 +302,23 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
-    borderColor: '#D20515',
-    borderWidth: 1.5,
-  },
-  suggestionOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 48,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    lineHeight: 48,
-    color: 'rgba(255,255,255,0.3)',
-    textAlignVertical: 'center',
-  },
-  inlineSuggestion: {
-    color: 'rgba(255,255,255,0.3)',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   divLeft: {
-    flex: Platform.OS === 'web' ? 0.9 : 0.65, 
+    flex: 0.65,
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
   },
   divRight: {
-    flex: Platform.OS === 'web' ? 0.1 : 0.35, 
+    flex: 0.35,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -403,13 +374,14 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: 'row',
     backgroundColor: '#D20515',
-    width: 10,
-    height:48,
+    width: 100,
+    height: 48,
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 4,
   },
 });
+
 
 export default ChatInput;
