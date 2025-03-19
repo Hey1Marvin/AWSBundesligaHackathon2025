@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Markdown from 'react-native-markdown-display';
 
@@ -7,12 +7,10 @@ import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { height } from '@mui/system';
 
 const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   // Color Handling
   const colorScheme = useColorScheme();
-
   const isUser = type === 'user';
   const formattedTime = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -64,26 +62,18 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
       >
         {!isUser && (
           <View style={[styles.avatarContainer, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
-          <View style ={styles.logoBack}>
-            <BundesligaLogo />
-          </View>
+            <View style={styles.logoBack}>
+              <BundesligaLogo />
+            </View>
           </View>
         )}
 
         <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble]}>
-<<<<<<< HEAD
+          {/* Render full message using Markdown */}
           <Markdown style={markdownStyles}>
             {message}
           </Markdown>
           <Animated.Text style={styles.timestamp}>{formattedTime}</Animated.Text>
-=======
-          <Text style={[styles.message, isUser ? styles.userText : styles.systemText]}>
-            {displayMessage}
-          </Text>
-          <View style={styles.messageFooter}>
-            <Text style={styles.timestamp}>{formattedTime}</Text>
-          </View>
->>>>>>> bde7a4bba418285d3bf5e211e80986b85d6e58b7
         </View>
       </Animated.View>
 
@@ -104,7 +94,6 @@ const markdownStyles = {
     lineHeight: 22,
     color: '#ffffff',
   },
-  // Customize headings, links, etc.
   heading1: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -128,10 +117,10 @@ const styles = StyleSheet.create({
   systemContainer: {
     justifyContent: 'flex-start',
   },
-  // Limit the message wrapper width to 70% of the screen
+  // Limit message width to 70% of screen width
   messageWrapper: {
     flexDirection: 'row',
-    maxWidth: '70%',
+    maxWidth: Dimensions.get('window').width * 0.7,
   },
   userMessageWrapper: {
     justifyContent: 'flex-end',
@@ -147,16 +136,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-  
   },
   logoBack: {
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: 40,
     height: 40,
     borderRadius: 18,
-    backgroundColor:"#ffffff",
+    backgroundColor: "#ffffff",
   },
   bubble: {
     borderRadius: 18,
@@ -167,7 +154,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 3,
-    // Ensure the text wraps properly
     flexShrink: 1,
   },
   userBubble: {

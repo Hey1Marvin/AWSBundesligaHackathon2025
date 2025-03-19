@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable, StatusBar, SafeAreaView, Platform } from 'react-native';
-import { Link } from 'expo-router';
-<<<<<<< HEAD
-import { Ionicons } from '@expo/vector-icons';
 
 import ChatWindow from '../components/ChatWindow';
-=======
-import bundesligaLogo from '@/assets/images/icons/BundesligaLogo';
-import { Ionicons } from '@expo/vector-icons';
-
-import ChatWindow from '../components/ChatWindow';
-import ChatInput from '../components/ChatInput';
 import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
->>>>>>> bde7a4bba418285d3bf5e211e80986b85d6e58b7
 
 export default function AIChatPage() {
   const [showInfo, setShowInfo] = useState(false);
