@@ -49,7 +49,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="videos"
+        name="statistiken"
         options={{
           title: 'Videos',
           tabBarIcon: () => <Videos color={Colors[colorScheme ?? 'light'].icon}/>,
@@ -63,7 +63,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="statistiken"
+        name="videos"
         options={{
           title: 'Statistiken',
           tabBarIcon: () => <Statistiken color={Colors[colorScheme ?? 'light'].icon}/>,

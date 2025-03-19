@@ -1,0 +1,18 @@
+console.log("Sending prompt to API:", text);
+const response = await fetch("/hackaton/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ prompt: text })
+});
+console.log("Received response object:", response);
+
+if (!response.ok) {
+  console.error("HTTP error:", response.status);
+  throw new Error(`HTTP-Error: ${response.status}`);
+}
+
+const data = await response.json();
+console.log("Response JSON:", data);
+
+const botText = data.output?.message?.content?.[0]?.text || "No answer received.";
+console.log("Extracted bot text:", botText);
