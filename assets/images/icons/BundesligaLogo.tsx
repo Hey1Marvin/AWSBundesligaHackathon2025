@@ -9,7 +9,7 @@ const BundesligaLogo =  ({ color, ...props }: { color: string } & SvgProps) => (
   >
     <Ellipse cx={19.5} cy={18.5} fill="#D20515" rx={19.5} ry={18.5} />
     <G clipPath="url(#a)">
-      <Path fill="none" d="M33.965 7h-28v24h28V7Z" />
+      <Path fill="#none" d="M33.965 7h-28v24h28V7Z" />
       <Path fill="#D20515" d="M33.965 7h-28v24h28V7Z" />
       <Path
         fill="#fff"
