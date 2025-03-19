@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, Platform } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Image, Animated, Platform } from 'react-native';
 import ChatMessage from './ChatMessage';
 import SoccerBall from '../../assets/images/icons/Ball';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import ChatInput from './ChatInput';
+
 
 
 const AnimatedTypingDot = ({ delay = 0}) => {
@@ -85,8 +87,6 @@ const AnimatedTypingDot = ({ delay = 0 }) => {
 */
 
 
-const ChatWindow = ({ messages = [] }) => {
-import ChatInput from './ChatInput';
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState([
@@ -166,7 +166,21 @@ const ChatWindow = () => {
             timestamp={msg.timestamp} 
           />
         ))}
+
+      <View style={styles.typingContainer}>
+        <View style={styles.typingBubble}>
+          <AnimatedTypingDot delay={0} />
+          <AnimatedTypingDot delay={200} />
+          <AnimatedTypingDot delay={400} />
+        </View>
+      </View>
       </ScrollView>
+
+      {/* Typing indicator */}
+
+ 
+
+      
 
       {/* Chat Input */}
       <ChatInput onSend={handleSend} />
