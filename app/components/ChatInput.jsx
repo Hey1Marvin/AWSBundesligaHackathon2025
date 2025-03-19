@@ -219,64 +219,40 @@ const ChatInput = ({ onSend }) => {
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
-            {/* We're using a different approach here - a transparent input with an overlay */}
-            <TextInput
-  mode="flat"
-  placeholder="Ask me anything..."
-  placeholderTextColor={Colors[colorScheme ?? 'light'].tint }
-  value={text}
-  onChangeText={updateText}
-  onKeyPress={onKeyPress}
-  style={styles.textInput}
-  textColor="#FFFFFF"
-  underlineColor="transparent"
-  activeUnderlineColor="transparent"  // <-- Add this line
-  selectionColor="#e10600"
-  multiline={false}
-  theme={{
-    colors: {
-      text: '#FFFFFF',
-      placeholder: 'rgba(255,255,255,0.6)',
-      primary: '#e10600',
-      background: 'transparent'
-    }
-  }}
-/>
-
-             
-              ref={inputRef}
-              mode="flat"
-              placeholder="Frag mich was..."
-              placeholderTextColor="rgba(255,255,255,0.6)"
-              value={text}
-              onChangeText={updateText}
-              onKeyPress={onKeyPress}
-              style={styles.textInput}
-              textColor="#FFFFFF"
-              underlineColor="transparent"
-              activeUnderlineColor="transparent"
-              selectionColor="#e10600"
-              multiline={false}
-              theme={{
-                colors: {
-                  text: '#FFFFFF',
-                  placeholder: 'rgba(255,255,255,0.6)',
-                  primary: '#e10600',
-                  background: 'transparent'
-                }
-              }}
-            />
-            
-            {suggestion && (
-              <View style={styles.suggestionOverlay} pointerEvents="none">
-                <View style={styles.invisibleText}>
-                  <Text style={[styles.baseText, { opacity: 0 }]}>{text}</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={inputRef}
+                mode="flat"
+                placeholder="Ask me anything..."
+                placeholderTextColor={Colors[colorScheme ?? 'light'].tint}
+                value={text}
+                onChangeText={updateText}
+                onKeyPress={onKeyPress}
+                style={styles.textInput}
+                textColor="#FFFFFF"
+                underlineColor="transparent"
+                activeUnderlineColor="transparent"
+                selectionColor="#e10600"
+                multiline={false}
+                theme={{
+                  colors: {
+                    text: '#FFFFFF',
+                    placeholder: 'rgba(255,255,255,0.6)',
+                    primary: '#e10600',
+                    background: 'transparent'
+                  }
+                }}
+              />
+              
+              {suggestion && (
+                <View style={styles.suggestionWrapper}>
+                  <Text style={styles.hiddenText}>{text}</Text>
+                  <Animated.Text style={[styles.suggestionText, {opacity: fadeAnim}]}>
+                    {suggestion}
+                  </Animated.Text>
                 </View>
-                <Animated.Text style={[styles.suggestionText, { opacity: fadeAnim }]}>
-                  {suggestion}
-                </Animated.Text>
-              </View>
-            )}
+              )}
+            </View>
           </View>
           <View style={styles.divRight}>
             {suggestion && (
@@ -328,6 +304,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  inputContainer: {
+    flex: 1,
+    position: 'relative',
+  },
   textInput: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -338,30 +318,29 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     zIndex: 1,
     color: '#FFFFFF',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
   },
-  suggestionOverlay: {
+  suggestionWrapper: {
     position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: 'row',
-    left: 16, // Match textInput paddingHorizontal
-    height: 48,
     alignItems: 'center',
-    zIndex: 2,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     pointerEvents: 'none',
   },
-  baseText: {
+  hiddenText: {
+    color: 'transparent',
     fontSize: 16,
-    color: '#FFFFFF',
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
-    fontWeight: '400',
-  },
-  invisibleText: {
-    opacity: 0,
   },
   suggestionText: {
     fontSize: 16,
     color: 'rgba(200, 200, 200, 0.7)',
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
-    fontWeight: '400',
   },
   completeButton: {
     backgroundColor: 'rgba(255,255,255,0.2)',
