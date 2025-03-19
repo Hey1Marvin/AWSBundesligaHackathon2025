@@ -1,12 +1,15 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router'
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const app = () => {
+  const colorScheme = useColorScheme();
   return (
-    <View style={styles.container}>
-        <Text style={styles.text}>Tabelle Tab</Text>
+    <View style={[styles.container,  {backgroundColor: Colors[colorScheme ?? 'light'].background}]}>
+        <Text style={[styles.text,  {color: Colors[colorScheme ?? 'light'].tint}]}>Tabelle Tab</Text>
     </View>
   )
 }
@@ -20,10 +23,8 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   text:{
-    color:'white',
     fontSize:42,
     fontWeight: 'bold',
     textAlign:'center',
-    backgroundColor:'rgba(0,0,0, 0.5)',
   },
 });

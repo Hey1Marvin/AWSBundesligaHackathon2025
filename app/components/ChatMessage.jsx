@@ -157,13 +157,35 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
 
   return (
     <View style={[styles.container, isUser ? styles.userContainer : styles.systemContainer]}>
-      {!isUser && <ChattingIconBundesliga />}
-      
-      <Animated.View style={styles.messageWrapper}>
-        {/* Message Bubble */}
-        <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble]}>
-          <Markdown style={markdownStyles}>{message}</Markdown>
-          <Text style={styles.timestamp}>{formattedTime}</Text>
+      <Animated.View
+        style={[
+          styles.messageWrapper,
+          isUser ? styles.userMessageWrapper : styles.systemMessageWrapper,
+          { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+        ]}
+      >
+        {!isUser && (
+          <ChattingIconBundesliga/>
+        )}
+
+        <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble, { backgroundColor: isUser ? '#D20515' : Colors[colorScheme ?? 'light'].answerBack }]}>
+          {/* Render full message using Markdown */}
+          <Markdown
+            style={{
+              body: {
+                ...markdownStyles.body,
+                color: isUser ? '#FFFFFF' : Colors[colorScheme ?? 'light'].answerTint,
+              },
+              heading1: markdownStyles.heading1,
+              link: markdownStyles.link,
+            }}
+          >
+            {message}
+          </Markdown>
+          <Animated.Text style={[styles.timestamp, 
+          {
+            color: isUser ? '#FFFFFF' : Colors[colorScheme ?? 'light'].tint,
+          }]}>{formattedTime}</Animated.Text>
         </View>
   
         {/* Icons unterhalb der Bubble */}
@@ -213,7 +235,6 @@ const markdownStyles = {
   body: {
     fontSize: 16,
     lineHeight: 22,
-    color: '#ffffff',
   },
   heading1: {
     fontSize: 22,
@@ -267,21 +288,21 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
     flexShrink: 1,
+    zIndex: 0,
   },
   userBubble: {
     backgroundColor: '#D20515',
     borderTopRightRadius: 4,
   },
   systemBubble: {
-    backgroundColor: '#1f1f1f',
     borderTopLeftRadius: 4,
     marginLeft: 44, // Platz für Bundesliga-Icon
   },
 
   // Timestamp
   timestamp: {
+    color:'#fff',
     fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.6)',
     marginTop: 8,
     alignSelf: 'flex-end',
   },
