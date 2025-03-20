@@ -8,9 +8,9 @@ import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga
 // Icons for chat evaluation, copy
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
-import VolumeUp from '@/assets/images/icons/speaker';
+import VolumeUp from '@/assets/images/icons/Speaker';
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
-import CopyIcon from '@/assets/images/icons/Copy';
+import Copy from '@/assets/images/icons/Copy3';
 import * as Speech from 'expo-speech';
 import * as Clipboard from 'expo-clipboard';
 
@@ -37,7 +37,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   // Farben aus Ihrem Theme
-  const activeColor = '#e10600'; // Rot
+  const activeColor = Colors[colorScheme ?? 'light'].mainRed;
   const inactiveColor = Colors[colorScheme ?? 'light'].icon; // Grau aus Theme
 
   useEffect(() => {
@@ -149,6 +149,22 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         {/* Icons unterhalb der Bubble */}
         {!isUser && (
           <View style={styles.actionsContainer}>
+
+          <TouchableOpacity onPress={handleReadAloud}>
+              <VolumeUp 
+                width={16} 
+                height={16} 
+                color={isSpeaking ? activeColor : inactiveColor}
+              />
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={handleCopy}>
+              <Copy
+                width={16} 
+                height={16} 
+                color={isCopied ? activeColor : inactiveColor}
+              />
+            </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => handleThumbs('up')}
               style={styles.iconButton}
@@ -170,22 +186,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
                 color={rating === 'down' ? activeColor : inactiveColor}
               />
             </TouchableOpacity>
-                
-            <TouchableOpacity onPress={handleReadAloud}>
-              <VolumeUp 
-                width={16} 
-                height={16} 
-                color={isSpeaking ? activeColor : inactiveColor}
-              />
-            </TouchableOpacity>
-            
-            <TouchableOpacity onPress={handleCopy}>
-              <CopyIcon 
-                width={16} 
-                height={16} 
-                color={isCopied ? activeColor : inactiveColor}
-              />
-            </TouchableOpacity>
+              
           </View>
         )}
       </Animated.View>
@@ -275,14 +276,13 @@ const styles = StyleSheet.create({
   actionsContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 16,
+    gap: 8,
     marginTop: 4,
-    marginRight: 8,
+    paddingRight: 10,
     width: '100%',
   },
   iconButton: {
-    padding: 4,
-    opacity: 0.7,
+    paddingHorizontal: 4,
     ...Platform.select({
       web: {
         transition: 'opacity 0.2s',
