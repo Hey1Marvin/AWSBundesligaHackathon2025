@@ -235,10 +235,10 @@ const ChatInput = ({ onSend }) => {
                 onChangeText={updateText}
                 onKeyPress={onKeyPress}
                 style={styles.textInput}
-                textColor="#FFFFFF"
+                textColor={Colors[colorScheme ?? 'light'].tint}
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
-                selectionColor="#e10600"
+                selectionColor={Colors[colorScheme ?? 'light'].mainRed}
                 multiline={false}
                 theme={{
                   colors: {
@@ -302,23 +302,16 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  
   },
   divLeft: {
-    flex: 0.65,
+    flex: Platform.OS === 'web' ? 0.9 : 0.65,
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
   },
   divRight: {
-    flex: 0.35,
+    flex: Platform.OS === 'web' ? 0.1 : 0.35,
     flexDirection: 'row',
     alignItems: 'center',
   },
