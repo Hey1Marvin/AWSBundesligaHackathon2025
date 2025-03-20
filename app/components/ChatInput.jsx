@@ -5,6 +5,7 @@ import ArrowUp from '@/assets/images/icons/ArrowUp';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Quiz from '@/assets/images/icons/Quiz';
 
 // Extended dictionary with categories and weights
 const SMART_DICTIONARY = {
@@ -235,13 +236,14 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
-            <ScrollView 
-              ref={scrollViewRef}
-              horizontal 
-              showsHorizontalScrollIndicator={false}
-              style={styles.scrollContainer}
-              contentContainerStyle={styles.scrollContentContainer}
-            >
+          <ScrollView 
+  ref={scrollViewRef}
+  horizontal={Platform.OS === 'web'}  // Only scroll horizontally on web
+  showsHorizontalScrollIndicator={false}
+  style={styles.scrollContainer}
+  contentContainerStyle={styles.scrollContentContainer}
+>
+
               <View style={styles.inputContainer}>
                 <TextInput
                   ref={inputRef}
@@ -289,12 +291,18 @@ const ChatInput = ({ onSend, onQuizStart }) => {
               <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
             <TouchableOpacity 
-              style={styles.quizButton } 
+              style={styles.quizButton} 
               onPress={handleQuizStart} 
               activeOpacity={0.7}
             >
-              <Text style={styles.quizButtonText}>Quiz</Text>
+              {Platform.OS === 'web' ? (
+                <Text style={styles.quizButtonText}>Quiz</Text>
+              ) : (
+                <Quiz size={24} />
+              )}
             </TouchableOpacity>
+
+
           </View>
         </View>
       </View>
@@ -329,20 +337,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   divLeft: {
-    flex: Platform.OS === 'web' ? 0.9 : 0.65,
+    flex: Platform.OS === 'web' ? 0.9 : 0.8, // increased on mobile for more space
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
   },
   divRight: {
-    flex: Platform.OS === 'web' ? 0.1 : 0.35,
+    flex: Platform.OS === 'web' ? 0.1 : 0.15, // reduce flex on mobile
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingRight: 12,
-    minWidth: Platform.OS === 'web' ? 170 : 210,
+    minWidth: Platform.OS === 'web' ? 170 : 120, // reduce minimum width on mobile
   },
+  
   scrollContainer: {
     flex: 1,
     flexGrow: 1,
@@ -381,7 +390,7 @@ const styles = StyleSheet.create({
     pointerEvents: 'none',
   },
   hiddenText: {
-    color: 'transparent',
+    opacity: 0,
     fontSize: 16,
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
   },
@@ -413,7 +422,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.12)',
     borderColor: '#e10600',
     borderWidth: 1.5,
-    width: 64,
+    width: 44,
     height: 38,
     borderRadius: 19,
     justifyContent: 'center',

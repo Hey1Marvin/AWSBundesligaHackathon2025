@@ -3,7 +3,7 @@ import { View, StyleSheet, Animated, Text, TouchableOpacity, Platform } from 're
 import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga';
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
-import VolumeUp from '@/assets/images/icons/Speaker';
+import VolumeUp from '@/assets/images/icons/speaker';
 import CopyIcon from '@/assets/images/icons/Copy';
 import * as Speech from 'expo-speech';
 import * as Clipboard from 'expo-clipboard';
