@@ -295,7 +295,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
               onPress={handleQuizStart} 
               activeOpacity={0.7}
             >
-                <Quiz size={24} />
+                <Quiz size={24} color={Colors[colorScheme ?? 'light'].tint} />
               
             </TouchableOpacity>
 
