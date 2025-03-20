@@ -7,6 +7,7 @@
     "icon": "./assets/images/bundesliga-logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "backgroundColor": "#D20515",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
