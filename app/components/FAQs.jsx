@@ -1,7 +1,10 @@
 import React from 'react';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const FAQs = ({ onSelect }) => {
+  const colorScheme = useColorScheme();
   const questions = [
     'Wann beginnt das nächste Spiel?',
     'Wie ist der aktuelle Stand?',
@@ -12,15 +15,14 @@ const FAQs = ({ onSelect }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>FAQs</Text>
+      <Text style={[styles.title, {color: Colors[colorScheme ?? 'light'].tint}]}>FAQs</Text>
       {questions.map((question, index) => (
         <TouchableOpacity 
           key={index} 
           onPress={() => onSelect(question)} 
           activeOpacity={0.8}
-          style={styles.faqButton}
-        >
-          <Text style={styles.faqText}>{question}</Text>
+          style={[styles.faqButton, {backgroundColor: Colors[colorScheme ?? 'light'].navbar}]}>
+          <Text style={[styles.faqText, {color: Colors[colorScheme ?? 'light'].tint}]}>{question}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -37,9 +39,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#f0f0f0',
     marginBottom: 10,
-    textShadowColor: '#000',
-    textShadowOffset: { width: 0.5, height: 0.5 },
-    textShadowRadius: 1,
+
   },
   faqButton: {
     backgroundColor: '#2a2a2a',
@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   },
   faqText: {
     fontSize: 14,
-    color: '#ffffff',
     textAlign: 'center',
     fontWeight: '600',
   },

@@ -34,8 +34,8 @@ const BL_COLORS = {
 
 const SidebarButton = ({ title, route, icon: Icon, isActive, onPress }) => {
   const colorScheme = useColorScheme();
-  const activeColor = BL_COLORS.red;
-  const inactiveColor = BL_COLORS.lightGrey;
+  const activeColor =  Colors[colorScheme ?? 'light'].tint;
+  const inactiveColor = Colors[colorScheme ?? 'light'].strongGrey;
   
   return (
     <Pressable 
@@ -60,13 +60,14 @@ const SidebarButton = ({ title, route, icon: Icon, isActive, onPress }) => {
       >
         {title}
       </Text>
-      {isActive && <View style={[styles.activeIndicator, { backgroundColor: BL_COLORS.red }]} />}
+      {isActive && <View style={[styles.activeIndicator, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]} />}
     </Pressable>
   );
 };
 
 const TabBarIcon = ({ icon: Icon, isActive }) => {
-  const iconColor = isActive ? BL_COLORS.red : BL_COLORS.lightGrey;
+  const colorScheme = useColorScheme();
+  const iconColor = isActive ? Colors[colorScheme ?? 'light'].tint: Colors[colorScheme ?? 'light'].strongGrey;
   
   return (
     <View style={styles.tabIconContainer}>
@@ -143,8 +144,8 @@ export default function TabLayout() {
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarActiveTintColor: BL_COLORS.red,
-          tabBarInactiveTintColor: BL_COLORS.lightGrey,
+          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+          tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].weakGrey,
           tabBarShowLabel: true,
           tabBarLabelStyle: styles.tabBarLabel,
           tabBarBackground: TabBarBackground,
@@ -158,9 +159,9 @@ export default function TabLayout() {
             ) : null;
           },
           tabBarStyle: {
-            backgroundColor: Colors[colorScheme ?? 'light'].eleColor,
+            backgroundColor: Colors[colorScheme ?? 'light'].navbar,
             borderTopWidth: 1,
-            borderTopColor: BL_COLORS.backgroundGrey,
+            borderTopColor: Colors[colorScheme ?? 'light'].eleColor,
             height: 60 + (insets.bottom > 0 ? insets.bottom : 0),
             paddingBottom: insets.bottom > 0 ? insets.bottom : 5,
             paddingTop: 5,
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: BL_COLORS.backgroundGrey,
+    backgroundColor: 'transparent',
   },
   sidebarButtonsContainer: {
     marginTop: 20,

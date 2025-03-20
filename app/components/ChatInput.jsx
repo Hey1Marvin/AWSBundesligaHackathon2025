@@ -238,10 +238,10 @@ const ChatInput = ({ onSend, onQuizStart }) => {
                 onChangeText={updateText}
                 onKeyPress={onKeyPress}
                 style={styles.textInput}
-                textColor="#FFFFFF"
+                textColor={Colors[colorScheme ?? 'light'].tint}
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
-                selectionColor="#e10600"
+                selectionColor={Colors[colorScheme ?? 'light'].mainRed}
                 multiline={false}
                 theme={{
                   colors: {
@@ -265,11 +265,11 @@ const ChatInput = ({ onSend, onQuizStart }) => {
           <View style={styles.divRight}>
             {suggestion && (
               <TouchableOpacity style={styles.completeButton} onPress={acceptSuggestion} activeOpacity={0.7}>
-                <Text style={{ color: '#FFFFFF', fontSize: 14 }}>Tab</Text>
+                <Text style={[{fontSize: 14 }, {color: Colors[colorScheme ?? 'light'].tint}]}>Tab</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
-              <Text style={{ color: '#FFFFFF', fontSize: 16, marginRight: 4 }}>Send</Text>
+              <Text style={[{fontSize: 16}, {marginRight: 4}, {color: '#fff'}]}>Send</Text>
               <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
             <TouchableOpacity 
@@ -311,20 +311,16 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  
   },
   divLeft: {
-    flex: 0.65,
+    flex: Platform.OS === 'web' ? 0.9 : 0.65,
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
   },
   divRight: {
-    flex: 0.35,
+    flex: Platform.OS === 'web' ? 0.1 : 0.35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
