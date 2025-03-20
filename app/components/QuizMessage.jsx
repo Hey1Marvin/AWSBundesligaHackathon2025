@@ -158,7 +158,8 @@ const QuizMessage = ({
                 key={index}
                 style={[
                   styles.optionButton,
-                  getOptionStyle(index)
+                  getOptionStyle(index),
+                  { backgroundColor: Colors[colorScheme ?? 'light'].navbar}
                 ]}
                 onPress={() => !showFeedback && handleOptionSelect(index)}
                 disabled={showFeedback}
@@ -168,10 +169,10 @@ const QuizMessage = ({
                     styles.optionText,
                     {
                       color: showFeedback && index === correctAnswer 
-                        ? '#FFFFFF' 
+                        ? Colors[colorScheme ?? 'light'].tint
                         : showFeedback && index === selectedOption && selectedOption !== correctAnswer
-                          ? '#FFFFFF'
-                          : Colors[colorScheme ?? 'light'].text
+                          ? Colors[colorScheme ?? 'light'].tint
+                          : Colors[colorScheme ?? 'light'].tint
                     }
                   ]}
                 >

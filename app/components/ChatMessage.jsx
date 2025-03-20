@@ -8,16 +8,18 @@ import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga
 // Icons for chat evaluation, copy
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
-import VolumeUp from '@/assets/images/icons/speaker';
+import VolumeUp from '@/assets/images/icons/Speaker';
 import Share from '@/assets/images/icons/Share';
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
-import Copy from '@/assets/images/icons/Copy3';
+import Copy from '@/assets/images/icons/Copy';
 import * as Speech from 'expo-speech';
 import * as Clipboard from 'expo-clipboard';
 
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+
+import { ShareService } from '../components/shareService'; // for share option
 
 
 
@@ -49,13 +51,26 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   const handleCopy = () => {
     Clipboard.setString(message);
     setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+    setTimeout(() => setIsCopied(false), 1500);
   };
 
-  const handleShare = () => {
-    Clipboard.setString(message);
-    setIsShared(true);
-    setTimeout(() => setIsShared(false), 2000);
+  const handleShare = async () => {
+    try {
+      setIsShared(true);
+      ShareService.setMessage(message);
+      await ShareService.share();
+      
+      // Visuelles Feedback nur bei Erfolg
+      
+      setTimeout(() => setIsShared(false), 1500);
+      
+    } catch (error) {
+      console.log("shared")
+      setIsShared(false)
+      if (!error.message.includes('Aborted')) {
+        setIsShared(false);
+      }
+    }
   };
 
   const handleReadAloud = () => {
