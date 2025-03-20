@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Svg, Path } from "react-native-svg";
 
-const CopyIcon = ({ width = 24, height = 24, color = "#000" }) => (
+const Copy = ({ width = 24, height = 24, color = "#000" }) => (
   <Svg width={width} height={height} viewBox="0 0 24 24">
     <Path
       fill={color}
@@ -11,4 +11,4 @@ const CopyIcon = ({ width = 24, height = 24, color = "#000" }) => (
   </Svg>
 );
 
-export default CopyIcon;
+export default Copy;
