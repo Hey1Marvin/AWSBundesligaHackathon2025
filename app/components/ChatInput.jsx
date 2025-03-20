@@ -263,11 +263,11 @@ const ChatInput = ({ onSend }) => {
           <View style={styles.divRight}>
             {suggestion && (
               <TouchableOpacity style={styles.completeButton} onPress={acceptSuggestion} activeOpacity={0.7}>
-                <Text style={{ color: '#FFFFFF', fontSize: 14 }}>Tab</Text>
+                <Text style={[{fontSize: 14 }, {color: Colors[colorScheme ?? 'light'].tint}]}>Tab</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
-              <Text style={{ color: '#FFFFFF', fontSize: 16, marginRight: 4 }}>Send</Text>
+              <Text style={[{fontSize: 16}, {marginRight: 4}, {color: '#fff'}]}>Send</Text>
               <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
           </View>
