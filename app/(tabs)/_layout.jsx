@@ -94,7 +94,7 @@ export default function TabLayout() {
           style={[
             styles.sidebar, 
             { 
-              backgroundColor: BL_COLORS.darkGrey,
+              backgroundColor: Colors[colorScheme ?? 'light'].eleColor,
               paddingTop: Math.max(20, insets.top)
             }
           ]}

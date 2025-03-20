@@ -51,6 +51,8 @@ const styles = StyleSheet.create({
   header: {
     // Remove padding so the header exactly matches the logo's height
     backgroundColor: 'transparent',
+    marginTop: 40,
+    marginBottom: 10,
   },
   headerContent: {
     alignItems: 'center',
