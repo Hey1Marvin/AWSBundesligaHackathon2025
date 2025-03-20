@@ -6,7 +6,6 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-
 // Erweitertes Dictionary mit Kategorien und Gewichtungen
 const SMART_DICTIONARY = {
   sports: {
@@ -41,7 +40,7 @@ const FLAT_DICTIONARY = Object.values(SMART_DICTIONARY).reduce(
   (acc, category) => [...acc, ...category.words], []
 );
 
-const ChatInput = ({ onSend }) => {
+const ChatInput = ({ onSend, onQuizStart }) => {
   const colorScheme = useColorScheme();
   const [text, setText] = useState('');
   const [suggestion, setSuggestion] = useState('');
@@ -217,11 +216,15 @@ const ChatInput = ({ onSend }) => {
     }
   };
 
+  // Quiz starten
+  const handleQuizStart = () => {
+    if (onQuizStart && typeof onQuizStart === 'function') {
+      onQuizStart();
+    }
+  };
+
   return (
-    <View style={[
-      styles.container, 
-      { paddingBottom: Math.max(16, insets.bottom) }
-    ]}>
+    <View style={[styles.container, { paddingBottom: Math.max(16, insets.bottom) }]}>
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
@@ -249,11 +252,10 @@ const ChatInput = ({ onSend }) => {
                   }
                 }}
               />
-              
               {suggestion && (
                 <View style={styles.suggestionWrapper}>
                   <Text style={styles.hiddenText}>{text}</Text>
-                  <Animated.Text style={[styles.suggestionText, {opacity: fadeAnim}]}>
+                  <Animated.Text style={[styles.suggestionText, { opacity: fadeAnim }]}>
                     {suggestion}
                   </Animated.Text>
                 </View>
@@ -269,6 +271,13 @@ const ChatInput = ({ onSend }) => {
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
               <Text style={[{fontSize: 16}, {marginRight: 4}, {color: '#fff'}]}>Send</Text>
               <ArrowUp color="#FFFFFF" size={18} />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.quizButton} 
+              onPress={handleQuizStart} 
+              activeOpacity={0.7}
+            >
+              <Text style={styles.quizButtonText}>Quiz</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -314,6 +323,8 @@ const styles = StyleSheet.create({
     flex: Platform.OS === 'web' ? 0.1 : 0.35,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingRight: 12,
   },
   inputContainer: {
     flex: 1,
@@ -363,8 +374,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   sendButton: {
-    marginEnd: 20,
-    flex: 2,
+    marginEnd: 8,
     flexDirection: 'row',
     backgroundColor: '#D20515',
     width: 100,
@@ -372,9 +382,28 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 4,
+  },
+  quizButton: {
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderColor: '#e10600',
+    borderWidth: 1.5,
+    width: 64,
+    height: 38,
+    borderRadius: 19,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#e10600",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  quizButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
 });
-
 
 export default ChatInput;

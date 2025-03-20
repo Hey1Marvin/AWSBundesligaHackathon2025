@@ -1,13 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Animated, Platform } from 'react-native';
 import ChatMessage from './ChatMessage';
+import QuizMessage from './QuizMessage';
 import SoccerBall from '../../assets/images/icons/Ball';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import ChatInput from './ChatInput';
 import FAQs from './FAQs';
-
-
+import { getQuizQuestion } from './QuizService';
 
 const AnimatedTypingDot = ({ delay = 0 }) => {
   const colorScheme = useColorScheme();
@@ -59,6 +59,9 @@ const ChatWindow = () => {
   // No initial messages so that FAQs are visible until a user sends a message.
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isQuizActive, setIsQuizActive] = useState(false);
+  const [quizScore, setQuizScore] = useState({ correct: 0, total: 0 });
+  const [quizQuestions, setQuizQuestions] = useState([]);
   const scrollViewRef = useRef(null);
 
   // Auto-scroll when messages update
@@ -126,9 +129,87 @@ const ChatWindow = () => {
     handleSend(question);
   };
 
+  // Handle Quiz Start
+  const handleQuizStart = () => {
+    setIsQuizActive(true);
+    setQuizScore({ correct: 0, total: 0 });
+    
+    // Track which questions have been asked to avoid repetition
+    setQuizQuestions([]);
+    
+    // Add a system message announcing the quiz
+    const quizStartMessage = {
+      id: Date.now().toString(),
+      message: "Bundesliga Quiz! Lass uns dein Wissen testen mit ein paar Fragen über den deutschen Fußball.",
+      type: "system",
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, quizStartMessage]);
+    
+    // Send the first quiz question
+    setTimeout(() => {
+      sendQuizQuestion();
+    }, 1000);
+  };
+
+  // Send a quiz question
+  const sendQuizQuestion = () => {
+    const quizQuestion = getQuizQuestion(quizQuestions);
+    
+    // Track this question to avoid repetition
+    setQuizQuestions(prev => [...prev, quizQuestion.question]);
+    
+    const quizMessage = {
+      id: Date.now().toString(),
+      type: "quiz",
+      question: quizQuestion.question,
+      options: quizQuestion.options,
+      correctAnswer: quizQuestion.correctAnswer,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, quizMessage]);
+  };
+
+  // Handle quiz answer selection
+  const handleAnswerSelected = (selectedIndex, isCorrect) => {
+    // Update the score
+    setQuizScore(prev => ({
+      correct: prev.correct + (isCorrect ? 1 : 0),
+      total: prev.total + 1
+    }));
+    
+    // Determine if we should send another question or end the quiz
+    if (quizScore.total < 4) { // limit to 5 questions per quiz
+      // Send next question after a delay
+      setTimeout(() => {
+        sendQuizQuestion();
+      }, 2000);
+    } else {
+      // End the quiz and show results
+      setTimeout(() => {
+        const finalScore = {
+          correct: quizScore.correct + (isCorrect ? 1 : 0),
+          total: quizScore.total + 1
+        };
+        
+        const quizEndMessage = {
+          id: Date.now().toString(),
+          message: `Quiz beendet! Du hast ${finalScore.correct} von ${finalScore.total} Fragen richtig beantwortet.`,
+          type: "system",
+          timestamp: new Date()
+        };
+        
+        setMessages(prev => [...prev, quizEndMessage]);
+        setIsQuizActive(false);
+      }, 2000);
+    }
+  };
+
   // Show FAQs only if no user message has been sent.
   const showFAQs = !messages.some(msg => msg.type === 'user');
   const colorScheme = useColorScheme();
+  
   return (
     <View style={styles.container}>
       <ScrollView 
@@ -138,14 +219,28 @@ const ChatWindow = () => {
         showsVerticalScrollIndicator={false}
       >
         {showFAQs && <FAQs onSelect={handleFAQSelect} />}
-        {messages.map((msg) => (
-          <ChatMessage 
-            key={msg.id} 
-            message={msg.message} 
-            type={msg.type} 
-            timestamp={msg.timestamp} 
-          />
-        ))}
+        {messages.map((msg) => {
+          if (msg.type === "quiz") {
+            return (
+              <QuizMessage
+                key={msg.id}
+                question={msg.question}
+                options={msg.options}
+                correctAnswer={msg.correctAnswer}
+                onAnswerSelected={handleAnswerSelected}
+                timestamp={msg.timestamp}
+              />
+            );
+          }
+          return (
+            <ChatMessage 
+              key={msg.id} 
+              message={msg.message} 
+              type={msg.type} 
+              timestamp={msg.timestamp} 
+            />
+          );
+        })}
         {isTyping && (
           <View style={styles.typingContainer}>
             <View style={[styles.typingBubble, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
@@ -157,7 +252,7 @@ const ChatWindow = () => {
         )}
       </ScrollView>
       {/* ChatInput stays fixed at the bottom, ensuring messages never appear behind it */}
-      <ChatInput onSend={handleSend} />
+      <ChatInput onSend={handleSend} onQuizStart={handleQuizStart} />
     </View>
   );
 };
