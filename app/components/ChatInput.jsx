@@ -273,7 +273,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
               <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
             <TouchableOpacity 
-              style={styles.quizButton} 
+              style={styles.quizButton } 
               onPress={handleQuizStart} 
               activeOpacity={0.7}
             >

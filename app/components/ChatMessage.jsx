@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
   },
   systemBubble: {
     borderTopLeftRadius: 4,
-    marginLeft: 44, // Platz für Bundesliga-Icon
+    marginLeft: 20,
   },
 
   // Timestamp

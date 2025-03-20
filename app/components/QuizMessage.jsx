@@ -3,7 +3,7 @@ import { View, StyleSheet, Animated, Text, TouchableOpacity, Platform } from 're
 import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga';
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
-import VolumeUp from '@/assets/images/icons/speaker';
+import VolumeUp from '@/assets/images/icons/Speaker';
 import CopyIcon from '@/assets/images/icons/Copy';
 import * as Speech from 'expo-speech';
 import * as Clipboard from 'expo-clipboard';
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   },
   systemBubble: {
     borderTopLeftRadius: 4,
-    marginLeft: 44, // Space for Bundesliga icon
+    marginLeft: 20, // Space for Bundesliga icon
   },
 
   // Question
