@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Platform, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, Platform, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import ArrowUp from '@/assets/images/icons/ArrowUp';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// Erweitertes Dictionary mit Kategorien und Gewichtungen
+// Extended dictionary with categories and weights
 const SMART_DICTIONARY = {
   sports: {
     words: [
@@ -16,14 +16,14 @@ const SMART_DICTIONARY = {
       'Flügelspieler', 'Auswechslung', 'Elfmeter', 'Foul', 'GelbeKarte', 'RoteKarte',
       'Trainerbank', 'Spielplan', 'Ligastart', 'Abstieg', 'Aufstieg', 'Saison', 'Vorrunde', 'Finale'
     ],
-    weight: 1.0
+    weight: 1.0,
   },
   common: {
     words: [
       'Hallo', 'Danke', 'Bitte', 'Heute', 'Morgen', 'Gestern', 'Jetzt', 'Später', 'Früher',
       'Wann', 'Wo', 'Warum', 'Wie', 'Was', 'Wer', 'Welche', 'Diese', 'Jene', 'Alle', 'Keine'
     ],
-    weight: 0.8
+    weight: 0.8,
   },
   technical: {
     words: [
@@ -31,31 +31,31 @@ const SMART_DICTIONARY = {
       'Technologie', 'Innovation', 'Entwicklung', 'Implementierung', 'Interface', 'Algorithmus',
       'Protokoll', 'Datenbank', 'Framework', 'Integration', 'Automatisierung'
     ],
-    weight: 1.2
+    weight: 1.2,
   }
 };
 
-// Flache Liste für einfache Suche
+// Flattened list for simple search
 const FLAT_DICTIONARY = Object.values(SMART_DICTIONARY).reduce(
   (acc, category) => [...acc, ...category.words], []
 );
 
 const ChatInput = ({ onSend, onQuizStart }) => {
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
   const [text, setText] = useState('');
   const [suggestion, setSuggestion] = useState('');
   const [recentSuggestions, setRecentSuggestions] = useState([]);
   const [userContext, setUserContext] = useState({ categories: {} });
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const inputRef = useRef(null);
-  const insets = useSafeAreaInsets();
+  const scrollViewRef = useRef(null);
 
-  // Aktuelle Kategorie bestimmen basierend auf Kontext
+  // Determine the current category based on context
   const getCurrentCategory = (inputText) => {
     const words = inputText.toLowerCase().split(/\s+/);
     const categoryScores = {};
     
-    // Kategorien-Scores berechnen
     Object.keys(SMART_DICTIONARY).forEach(category => {
       categoryScores[category] = 0;
       
@@ -69,16 +69,15 @@ const ChatInput = ({ onSend, onQuizStart }) => {
         }
       });
       
-      // Vorherige Interaktionen berücksichtigen
+      // Consider previous interactions
       if (userContext.categories[category]) {
         categoryScores[category] += userContext.categories[category] * 0.5;
       }
     });
     
-    // Kategorie mit höchstem Score auswählen
+    // Select the category with the highest score
     let topCategory = 'sports'; // Default
     let maxScore = 0;
-    
     Object.keys(categoryScores).forEach(category => {
       if (categoryScores[category] > maxScore) {
         maxScore = categoryScores[category];
@@ -89,7 +88,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     return topCategory;
   };
 
-  // Vorschläge basierend auf Kontext und aktueller Eingabe generieren
+  // Generate suggestions based on context and current input
   const generateSuggestions = (inputText) => {
     const words = inputText.split(/\s+/);
     const lastWord = words[words.length - 1];
@@ -97,15 +96,12 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     if (lastWord.length < 2) return '';
     
     const currentCategory = getCurrentCategory(inputText);
-    let matches = [];
-    
-    // Erste Priorität: Wörter aus der aktuellen Kategorie
-    matches = SMART_DICTIONARY[currentCategory].words.filter(word => 
+    let matches = SMART_DICTIONARY[currentCategory].words.filter(word => 
       word.toLowerCase().startsWith(lastWord.toLowerCase()) && 
       word.length > lastWord.length
     );
     
-    // Zweite Priorität: Wörter aus anderen Kategorien
+    // Try other categories if none are found
     if (matches.length === 0) {
       matches = FLAT_DICTIONARY.filter(word => 
         word.toLowerCase().startsWith(lastWord.toLowerCase()) && 
@@ -113,7 +109,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       );
     }
     
-    // Dritte Priorität: Kürzlich verwendete Vorschläge priorisieren
+    // Prioritize recently used suggestions
     const recentMatches = recentSuggestions.filter(word => 
       word.toLowerCase().startsWith(lastWord.toLowerCase()) && 
       word.length > lastWord.length
@@ -123,11 +119,10 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       matches = [...recentMatches, ...matches];
     }
     
-    // Kürzeren Vorschlag bevorzugen, aber nicht zu kurz
+    // Prefer suggestions with optimal length (3-7 extra characters)
     matches.sort((a, b) => {
       const aLen = a.length - lastWord.length;
       const bLen = b.length - lastWord.length;
-      // Optimale Länge für Vorschläge ist 3-7 Zeichen
       const aOptimal = Math.abs(aLen - 5);
       const bOptimal = Math.abs(bLen - 5);
       return aOptimal - bOptimal;
@@ -136,11 +131,11 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     return matches.length > 0 ? matches[0].slice(lastWord.length) : '';
   };
 
-  // Bei Eingabeänderung
+  // Update text and generate ghost text suggestion
   const updateText = (inputText) => {
     setText(inputText);
     
-    // Bei Zeilenumbruch Suggestion löschen
+    // Remove suggestion if multiline
     if (inputText.includes('\n')) {
       setSuggestion('');
       return;
@@ -150,7 +145,6 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     
     if (newSuggestion && newSuggestion !== suggestion) {
       setSuggestion(newSuggestion);
-      // Animation für neue Vorschläge
       Animated.sequence([
         Animated.timing(fadeAnim, {
           toValue: 0,
@@ -166,21 +160,28 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     } else if (!newSuggestion) {
       setSuggestion('');
     }
+    
+    // Scroll to the end when typing
+    if (scrollViewRef.current) {
+      setTimeout(() => {
+        scrollViewRef.current.scrollToEnd({ animated: true });
+      }, 50);
+    }
   };
 
-  // Vorschlag akzeptieren
+  // Accept the ghost suggestion
   const acceptSuggestion = () => {
     if (suggestion) {
       const words = text.split(/\s+/);
       const lastWord = words[words.length - 1];
       const fullWord = lastWord + suggestion;
       
-      // Zu kürzlich verwendeten Vorschlägen hinzufügen
+      // Add to recent suggestions if not already present
       if (!recentSuggestions.includes(fullWord)) {
         setRecentSuggestions(prev => [fullWord, ...prev.slice(0, 9)]);
       }
       
-      // Kontext aktualisieren
+      // Update context based on accepted suggestion
       const newContext = { ...userContext };
       Object.keys(SMART_DICTIONARY).forEach(category => {
         if (SMART_DICTIONARY[category].words.includes(fullWord)) {
@@ -189,11 +190,17 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       });
       setUserContext(newContext);
       
-      // Text aktualisieren
+      // Replace the last word with the completed word
       words[words.length - 1] = fullWord;
       const completedText = words.join(' ');
       setText(completedText);
       setSuggestion('');
+      
+      if (scrollViewRef.current) {
+        setTimeout(() => {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+        }, 50);
+      }
     }
   };
 
@@ -207,7 +214,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     }
   };
 
-  // Nachricht senden
+  // Send the message
   const handleSend = () => {
     if (text.trim()) {
       onSend(text);
@@ -216,7 +223,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     }
   };
 
-  // Quiz starten
+  // Start the quiz
   const handleQuizStart = () => {
     if (onQuizStart && typeof onQuizStart === 'function') {
       onQuizStart();
@@ -228,48 +235,57 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
-            <View style={styles.inputContainer}>
-              <TextInput
-                ref={inputRef}
-                mode="flat"
-                placeholder="Ask me anything..."
-                placeholderTextColor={Colors[colorScheme ?? 'light'].tint}
-                value={text}
-                onChangeText={updateText}
-                onKeyPress={onKeyPress}
-                style={styles.textInput}
-                textColor={Colors[colorScheme ?? 'light'].tint}
-                underlineColor="transparent"
-                activeUnderlineColor="transparent"
-                selectionColor={Colors[colorScheme ?? 'light'].mainRed}
-                multiline={false}
-                theme={{
-                  colors: {
-                    text: '#FFFFFF',
-                    placeholder: 'rgba(255,255,255,0.6)',
-                    primary: '#e10600',
-                    background: 'transparent'
-                  }
-                }}
-              />
-              {suggestion && (
-                <View style={styles.suggestionWrapper}>
-                  <Text style={styles.hiddenText}>{text}</Text>
-                  <Animated.Text style={[styles.suggestionText, { opacity: fadeAnim }]}>
-                    {suggestion}
-                  </Animated.Text>
-                </View>
-              )}
-            </View>
+            <ScrollView 
+              ref={scrollViewRef}
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              style={styles.scrollContainer}
+              contentContainerStyle={styles.scrollContentContainer}
+            >
+              <View style={styles.inputContainer}>
+                <TextInput
+                  ref={inputRef}
+                  mode="flat"
+                  placeholder="Ask me anything..."
+                  placeholderTextColor={Colors[colorScheme ?? 'light'].tint}
+                  value={text}
+                  onChangeText={updateText}
+                  onKeyPress={onKeyPress}
+                  style={styles.textInput}
+                  textColor={Colors[colorScheme ?? 'light'].tint}
+                  underlineColor="transparent"
+                  activeUnderlineColor="transparent"
+                  selectionColor={Colors[colorScheme ?? 'light'].mainRed}
+                  multiline={false}
+                  theme={{
+                    colors: {
+                      text: '#FFFFFF',
+                      placeholder: 'rgba(255,255,255,0.6)',
+                      primary: '#e10600',
+                      background: 'transparent'
+                    }
+                  }}
+                />
+                {/* Ghost text suggestion overlay */}
+                {suggestion && (
+                  <View style={styles.suggestionWrapper}>
+                    <Text style={styles.hiddenText}>{text}</Text>
+                    <Animated.Text style={[styles.suggestionText, { opacity: fadeAnim }]}>
+                      {suggestion}
+                    </Animated.Text>
+                  </View>
+                )}
+              </View>
+            </ScrollView>
           </View>
           <View style={styles.divRight}>
             {suggestion && (
               <TouchableOpacity style={styles.completeButton} onPress={acceptSuggestion} activeOpacity={0.7}>
-                <Text style={[{fontSize: 14 }, {color: Colors[colorScheme ?? 'light'].tint}]}>Tab</Text>
+                <Text style={[{ fontSize: 14 }, { color: Colors[colorScheme ?? 'light'].tint }]}>Tab</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.sendButton} onPress={handleSend} activeOpacity={0.7}>
-              <Text style={[{fontSize: 16}, {marginRight: 4}, {color: '#fff'}]}>Send</Text>
+              <Text style={[{ fontSize: 16 }, { marginRight: 4 }, { color: '#fff' }]}>Send</Text>
               <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
             <TouchableOpacity 
@@ -311,13 +327,13 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     paddingHorizontal: 0,
-  
   },
   divLeft: {
     flex: Platform.OS === 'web' ? 0.9 : 0.65,
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
+    overflow: 'hidden',
   },
   divRight: {
     flex: Platform.OS === 'web' ? 0.1 : 0.35,
@@ -325,10 +341,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingRight: 12,
+    minWidth: Platform.OS === 'web' ? 170 : 210,
+  },
+  scrollContainer: {
+    flex: 1,
+    flexGrow: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
   },
   inputContainer: {
     flex: 1,
     position: 'relative',
+    minWidth: '100%',
   },
   textInput: {
     flex: 1,
