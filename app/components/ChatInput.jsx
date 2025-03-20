@@ -251,7 +251,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
                   value={text}
                   onChangeText={updateText}
                   onKeyPress={onKeyPress}
-                  style={styles.textInput}
+                  style={[styles.textInput, {color:Colors[colorScheme ?? 'light'].tint}]}
                   textColor={Colors[colorScheme ?? 'light'].tint}
                   underlineColor="transparent"
                   activeUnderlineColor="transparent"
@@ -289,11 +289,11 @@ const ChatInput = ({ onSend, onQuizStart }) => {
               <ArrowUp color="#FFFFFF" size={18} />
             </TouchableOpacity>
             <TouchableOpacity 
-              style={styles.quizButton } 
+              style={[styles.quizButton, {backgroundColor: Colors[colorScheme ?? 'light'].eleColor}] } 
               onPress={handleQuizStart} 
               activeOpacity={0.7}
             >
-              <Text style={styles.quizButtonText}>Quiz</Text>
+              <Text style={[styles.quizButtonText, {color: Colors[colorScheme ?? 'light'].tint}] } >Quiz</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -365,7 +365,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     zIndex: 1,
-    color: '#FFFFFF',
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
   },
   suggestionWrapper: {
@@ -387,7 +386,6 @@ const styles = StyleSheet.create({
   },
   suggestionText: {
     fontSize: 16,
-    color: 'rgba(200, 200, 200, 0.7)',
     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
   },
   completeButton: {
@@ -410,22 +408,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quizButton: {
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderColor: '#e10600',
+    borderColor: '#D20515',
     borderWidth: 1.5,
     width: 64,
     height: 38,
     borderRadius: 19,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: "#e10600",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
   },
   quizButtonText: {
-    color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
     letterSpacing: 0.5,
