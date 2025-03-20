@@ -5,8 +5,8 @@ const Speaker = ({ color,
   height = 25, 
   ...props  }: { color: string } & SvgProps) => (
   <Svg
-    width={24}
-    height={24}
+    width={width}
+    height={height}
     fill="none"
     {...props}
   >
