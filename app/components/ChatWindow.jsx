@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   messagesContent: {
     paddingVertical: 8,
     // Increase bottom padding to ensure chat messages don't get hidden behind ChatInput.
-    paddingBottom: 80,
+    paddingBottom: 95,
   },
   typingContainer: {
     paddingHorizontal: 16,
