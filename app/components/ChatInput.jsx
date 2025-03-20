@@ -232,7 +232,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
   };
 
   return (
-    <View style={[styles.container, { paddingBottom: Math.max(16, insets.bottom) }]}>
+    <View style={[styles.container, { paddingBottom: Math.max(16, insets.bottom) }, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
       <View style={styles.inputRow}>
         <View style={[styles.inputField, { backgroundColor: Colors[colorScheme ?? 'light'].eleColor }]}>
           <View style={styles.divLeft}>
@@ -313,7 +313,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'transparent',
     padding: 16,
     width: '100%',
     zIndex: 100,

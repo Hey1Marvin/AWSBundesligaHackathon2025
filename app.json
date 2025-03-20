@@ -16,7 +16,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/bundesliga-logo.png",
         "backgroundColor": "#D20515"
-      }
+      },
+      "package": "com.hassoskicker.bundesligachatbot"
     },
     "web": {
       "bundler": "metro",
@@ -39,6 +40,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "45104c63-edb3-4198-aeae-ff20e6d1b724"
+      }
     }
   }
 }

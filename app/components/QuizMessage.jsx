@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     gap: 8,
     marginTop: 4,
-    paddingRight: 10,
+    paddingRight: 40,
     width: '100%',
   },
   iconButton: {
