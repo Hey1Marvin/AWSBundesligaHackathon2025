@@ -11,6 +11,8 @@ import Statistiken from '@/assets/images/icons/Statistiken';
 import AIChat from '@/assets/images/icons/AIChat';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import TabBarBackground from '@/components/ui/TabBarBackground';
+
 
 const ROUTES = [
   { name: 'index', title: 'Bundesliga', icon: Bundesliga },
@@ -145,6 +147,7 @@ export default function TabLayout() {
           tabBarInactiveTintColor: BL_COLORS.lightGrey,
           tabBarShowLabel: true,
           tabBarLabelStyle: styles.tabBarLabel,
+          tabBarBackground: TabBarBackground,
           tabBarIcon: ({ focused }) => {
             const routeConfig = ROUTES.find(r => r.name === route.name);
             return routeConfig ? (
@@ -155,7 +158,7 @@ export default function TabLayout() {
             ) : null;
           },
           tabBarStyle: {
-            backgroundColor: BL_COLORS.white,
+            backgroundColor: Colors[colorScheme ?? 'light'].eleColor,
             borderTopWidth: 1,
             borderTopColor: BL_COLORS.backgroundGrey,
             height: 60 + (insets.bottom > 0 ? insets.bottom : 0),
