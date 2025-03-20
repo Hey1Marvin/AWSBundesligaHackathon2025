@@ -5,8 +5,8 @@ const Quiz = ({ color,
   height = 21, 
   ...props  }: { color: string } & SvgProps) => (
   <Svg
-    width={24}
-    height={25}
+    width={width}
+    height={height}
     fill="none"
     {...props}
   >
