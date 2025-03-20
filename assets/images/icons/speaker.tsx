@@ -7,6 +7,8 @@ const Speaker = ({ color,
   <Svg
     width={width}
     height={height}
+    
+  viewBox = "0 0 25 25"
     fill="none"
     {...props}
   >

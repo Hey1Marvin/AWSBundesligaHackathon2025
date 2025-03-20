@@ -8,7 +8,8 @@ import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga
 // Icons for chat evaluation, copy
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
-import VolumeUp from '@/assets/images/icons/Speaker';
+import VolumeUp from '@/assets/images/icons/speaker';
+import Share from '@/assets/images/icons/Share';
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
 import Copy from '@/assets/images/icons/Copy3';
 import * as Speech from 'expo-speech';
@@ -35,6 +36,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   const [rating, setRating] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isShared, setIsShared] = useState(false);
 
   // Farben aus Ihrem Theme
   const activeColor = Colors[colorScheme ?? 'light'].mainRed;
@@ -48,6 +50,12 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
     Clipboard.setString(message);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const handleShare = () => {
+    Clipboard.setString(message);
+    setIsShared(true);
+    setTimeout(() => setIsShared(false), 2000);
   };
 
   const handleReadAloud = () => {
@@ -150,10 +158,18 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         {!isUser && (
           <View style={styles.actionsContainer}>
 
-          <TouchableOpacity onPress={handleReadAloud}>
-              <VolumeUp 
+            <TouchableOpacity onPress={handleShare}>
+              <Share 
                 width={16} 
                 height={16} 
+                color={isShared ? activeColor : inactiveColor}
+              />
+            </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleReadAloud}>
+              <VolumeUp 
+                width={18} 
+                height={18} 
                 color={isSpeaking ? activeColor : inactiveColor}
               />
             </TouchableOpacity>
@@ -170,8 +186,8 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
               style={styles.iconButton}
             >
               <ThumbsUp
-                width={20}
-                height={20}
+                width={16}
+                height={16}
                 color={rating === 'up' ? activeColor : inactiveColor}
               />
             </TouchableOpacity>

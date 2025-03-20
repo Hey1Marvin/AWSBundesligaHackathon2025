@@ -1,9 +1,10 @@
 import * as React from "react"
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Circle} from "react-native-svg"
-const Copy =  ({ width, height, color, ...props }: { color: string } & SvgProps) => (
+const Copy =  ({ color, width, height,  ...props }: { color: string } & SvgProps) => (
   <Svg
     width={width}
     height={height}
+    viewBox="0 0 24 24"
     fill="none"
     {...props}
   >
