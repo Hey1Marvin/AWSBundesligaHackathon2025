@@ -295,11 +295,8 @@ const ChatInput = ({ onSend, onQuizStart }) => {
               onPress={handleQuizStart} 
               activeOpacity={0.7}
             >
-              {Platform.OS === 'web' ? (
-                <Text style={[styles.quizButtonText, {color: Colors[colorScheme ?? 'light'].tint}] } >Quiz</Text>
-              ) : (
                 <Quiz size={24} />
-              )}
+              
             </TouchableOpacity>
 
 

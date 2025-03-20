@@ -8,7 +8,7 @@ import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga
 // Icons for chat evaluation, copy
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
-import VolumeUp from '@/assets/images/icons/Speaker';
+import VolumeUp from '@/assets/images/icons/speaker';
 import Share from '@/assets/images/icons/Share';
 import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
 import Copy from '@/assets/images/icons/Copy';
