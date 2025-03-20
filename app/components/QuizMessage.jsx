@@ -218,6 +218,22 @@ const QuizMessage = ({
 
         {/* Action icons below bubble */}
         <View style={styles.actionsContainer}>
+
+        <TouchableOpacity onPress={handleReadAloud}>
+            <VolumeUp 
+              width={16} 
+              height={16} 
+              color={isSpeaking ? activeColor : inactiveColor}
+            />
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={handleCopy}>
+            <CopyIcon 
+              width={16} 
+              height={16} 
+              color={isCopied ? activeColor : inactiveColor}
+            />
+          </TouchableOpacity>
           <TouchableOpacity 
             onPress={() => handleThumbs('up')}
             style={styles.iconButton}
@@ -240,21 +256,6 @@ const QuizMessage = ({
             />
           </TouchableOpacity>
               
-          <TouchableOpacity onPress={handleReadAloud}>
-            <VolumeUp 
-              width={16} 
-              height={16} 
-              color={isSpeaking ? activeColor : inactiveColor}
-            />
-          </TouchableOpacity>
-          
-          <TouchableOpacity onPress={handleCopy}>
-            <CopyIcon 
-              width={16} 
-              height={16} 
-              color={isCopied ? activeColor : inactiveColor}
-            />
-          </TouchableOpacity>
         </View>
       </Animated.View>
     </View>
@@ -363,14 +364,13 @@ const styles = StyleSheet.create({
   actionsContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 16,
+    gap: 8,
     marginTop: 4,
-    marginRight: 8,
+    paddingRight: 10,
     width: '100%',
   },
   iconButton: {
-    padding: 4,
-    opacity: 0.7,
+    paddingHorizontal: 4,
     ...Platform.select({
       web: {
         transition: 'opacity 0.2s',
