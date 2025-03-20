@@ -4,7 +4,7 @@
     "slug": "Bundesliga",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/bundesliga_logo.png",
+    "icon": "./assets/images/bundesliga-logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
