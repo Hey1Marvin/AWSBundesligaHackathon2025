@@ -12,7 +12,6 @@ export class ShareService {
 
   private static prepareWebEnvironment() {
     if (Platform.OS === 'web') {
-      // Für bessere Browser-Kompatibilität
       document.documentElement.dataset.shareMessage = encodeURIComponent(this._message);
     }
   }
@@ -34,7 +33,6 @@ export class ShareService {
 
   private static async handleWebShare(): Promise<void> {
     try {
-      // Feature Detection mit Modernizr-ähnlichem Ansatz
       if (this.isWebShareSupported()) {
         await navigator.share({
           title: 'Chat-Nachricht',
@@ -63,7 +61,6 @@ export class ShareService {
   }
 
   private static async showWebFallback(): Promise<void> {
-    // Browser-spezifisches Clipboard Handling
     const copySuccess = await this.copyToClipboard();
     
     if (copySuccess) {
@@ -76,7 +73,6 @@ export class ShareService {
   private static async copyToClipboard(): Promise<boolean> {
     try {
       if (Platform.OS === 'web') {
-        // Modern Clipboard API
         await navigator.clipboard.writeText(this._message);
         return true;
       }
@@ -98,13 +94,13 @@ export class ShareService {
           [
             { 
               text: 'OK', 
-              onPress: () => resolve() // Korrekte Auflösung ohne Parameter
+              onPress: () => resolve() 
             },
             { 
               text: 'Abbrechen', 
               onPress: () => {
                 this.handleCancel();
-                resolve(); // Explizites Auflösen ohne Rückgabewert
+                resolve();
               }
             }
           ]
@@ -117,7 +113,6 @@ export class ShareService {
 
   private static showFeedback(message: string): void {
     if (Platform.OS === 'web') {
-      // Visuelles Feedback für Web
       const feedback = document.createElement('div');
       feedback.textContent = message;
       Object.assign(feedback.style, {

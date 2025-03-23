@@ -56,7 +56,6 @@ const AnimatedTypingDot = ({ delay = 0 }) => {
 };
 
 const ChatWindow = () => {
-  // No initial messages so that FAQs are visible until a user sends a message.
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isQuizActive, setIsQuizActive] = useState(false);
@@ -64,16 +63,15 @@ const ChatWindow = () => {
   const [quizQuestions, setQuizQuestions] = useState([]);
   const scrollViewRef = useRef(null);
 
-  // Auto-scroll when messages update
+  // auto-scroll to the bottom when new messages are added
   useEffect(() => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
   }, [messages]);
 
-  // API call when sending a message.
+  // API call when sending message.
   const handleSend = async (text) => {
-    // Add the user message.
     const userMessage = { 
       id: Date.now().toString(), 
       message: text, 
@@ -83,7 +81,7 @@ const ChatWindow = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
-    // Choose API URL based on platform.
+    // choose API URL based on platform.
     const apiUrl = Platform.OS === 'web'
       ? 'http://localhost:3001/proxy/hackaton/chat'
       : 'https://hdeepi3xgi.execute-api.eu-central-1.amazonaws.com/hackaton/chat';
@@ -102,7 +100,6 @@ const ChatWindow = () => {
       const data = await response.json();
       const reply = data?.output?.message?.content[0]?.text;
       
-      // Post the bot reply as a system message.
       const botMessage = { 
         id: Date.now().toString(), 
         message: reply, 
@@ -124,20 +121,18 @@ const ChatWindow = () => {
     }
   };
 
-  // When an FAQ is clicked, send it as a user message.
+  // FAQ as a user message
   const handleFAQSelect = (question) => {
     handleSend(question);
   };
 
-  // Handle Quiz Start
   const handleQuizStart = () => {
     setIsQuizActive(true);
     setQuizScore({ correct: 0, total: 0 });
     
-    // Track which questions have been asked to avoid repetition
+    // Track which questions have been asked
     setQuizQuestions([]);
     
-    // Add a system message announcing the quiz
     const quizStartMessage = {
       id: Date.now().toString(),
       message: "Bundesliga Quiz! Lass uns dein Wissen testen mit ein paar Fragen über den deutschen Fußball.",
@@ -146,17 +141,15 @@ const ChatWindow = () => {
     };
     setMessages(prev => [...prev, quizStartMessage]);
     
-    // Send the first quiz question
     setTimeout(() => {
       sendQuizQuestion();
     }, 1000);
   };
 
-  // Send a quiz question
   const sendQuizQuestion = () => {
     const quizQuestion = getQuizQuestion(quizQuestions);
     
-    // Track this question to avoid repetition
+    // Track question
     setQuizQuestions(prev => [...prev, quizQuestion.question]);
     
     const quizMessage = {
@@ -171,22 +164,22 @@ const ChatWindow = () => {
     setMessages(prev => [...prev, quizMessage]);
   };
 
-  // Handle quiz answer selection
+  // quiz answer selection
   const handleAnswerSelected = (selectedIndex, isCorrect) => {
-    // Update the score
+    // Update score
     setQuizScore(prev => ({
       correct: prev.correct + (isCorrect ? 1 : 0),
       total: prev.total + 1
     }));
     
-    // Determine if we should send another question or end the quiz
+    // Send another question or end the quiz?
     if (quizScore.total < 4) { // limit to 5 questions per quiz
-      // Send next question after a delay
+      // Send next question after delay
       setTimeout(() => {
         sendQuizQuestion();
       }, 2000);
     } else {
-      // End the quiz and show results
+      // End quiz and show results
       setTimeout(() => {
         const finalScore = {
           correct: quizScore.correct + (isCorrect ? 1 : 0),
@@ -206,7 +199,7 @@ const ChatWindow = () => {
     }
   };
 
-  // Show FAQs only if no user message has been sent.
+  // FAQs only if no user message
   const showFAQs = !messages.some(msg => msg.type === 'user');
   const colorScheme = useColorScheme();
   
@@ -251,7 +244,6 @@ const ChatWindow = () => {
           </View>
         )}
       </ScrollView>
-      {/* ChatInput stays fixed at the bottom, ensuring messages never appear behind it */}
       <ChatInput onSend={handleSend} onQuizStart={handleQuizStart} />
     </View>
   );
@@ -285,7 +277,6 @@ const styles = StyleSheet.create({
   },
   messagesContent: {
     paddingVertical: 8,
-    // Increase bottom padding to ensure chat messages don't get hidden behind ChatInput.
     paddingBottom: 80,
   },
   typingContainer: {

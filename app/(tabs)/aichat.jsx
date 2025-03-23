@@ -19,7 +19,6 @@ export default function AIChatPage() {
     >
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
-        {/* Header now has no extra padding so its height exactly matches the BundesligaLogo */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <BundesligaLogo style={styles.logo} />
@@ -49,7 +48,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   header: {
-    // Remove padding so the header exactly matches the logo's height
     backgroundColor: 'transparent',
     marginTop: 40,
     marginBottom: 10,
@@ -58,9 +56,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Set the logo size here. The header’s height will be determined by this.
   logo: {
-    height: 80, // adjust this value as needed to make the logo (and header) bigger
+    height: 80, 
     resizeMode: 'contain',
   },
   badgeContainer: {

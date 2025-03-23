@@ -34,10 +34,10 @@ const QuizMessage = ({
   const formattedTime = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   // Theme colors
-  const activeColor = '#e10600'; // Red
+  const activeColor = Colors[colorScheme ?? 'light'].mainRed; // Red from theme
   const inactiveColor = Colors[colorScheme ?? 'light'].icon; // Gray from theme
 
-  // Animations
+  // animations
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -67,7 +67,6 @@ const QuizMessage = ({
       ])
     ).start();
 
-    // Animation of Bot Message option
     Animated.spring(iconScale, {
       toValue: 1,
       friction: 5,
@@ -77,16 +76,13 @@ const QuizMessage = ({
     return () => Speech.stop();
   }, [fadeAnim, scaleAnim, pulseAnim, isSpeaking]);
 
-  // Handle option selection
   const handleOptionSelect = (index) => {
     setSelectedOption(index);
     setShowFeedback(true);
     
-    // Callback for parent component
     onAnswerSelected(index, index === correctAnswer);
   };
 
-  // Handle action buttons
   const handleThumbs = (type) => {
     setRating(current => current === type ? null : type);
   };
@@ -114,7 +110,6 @@ const QuizMessage = ({
     }
   };
 
-  // Option styling based on state
   const getOptionStyle = (index) => {
     if (!showFeedback) {
       return selectedOption === index ? styles.selectedOption : styles.option;
@@ -143,7 +138,6 @@ const QuizMessage = ({
           styles.systemBubble, 
           { backgroundColor: Colors[colorScheme ?? 'light'].answerBack }
         ]}>
-          {/* Question */}
           <Text style={[
             styles.questionText, 
             { color: Colors[colorScheme ?? 'light'].answerTint }
@@ -151,7 +145,6 @@ const QuizMessage = ({
             {question}
           </Text>
           
-          {/* Answer options */}
           <View style={styles.optionsContainer}>
             {options.map((option, index) => (
               <TouchableOpacity
@@ -182,7 +175,6 @@ const QuizMessage = ({
             ))}
           </View>
 
-          {/* Feedback when needed */}
           {showFeedback && (
             <View 
               style={[
@@ -217,7 +209,6 @@ const QuizMessage = ({
           </Animated.Text>
         </View>
 
-        {/* Action icons below bubble */}
         <View style={styles.actionsContainer}>
 
         <TouchableOpacity onPress={handleReadAloud}>
@@ -264,7 +255,6 @@ const QuizMessage = ({
 };
 
 const styles = StyleSheet.create({
-  // Container
   container: {
     flexDirection: 'row',
     marginBottom: 16,
@@ -272,7 +262,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 
-  // Message Wrapper
   messageWrapper: {
     flexDirection: 'column',
     maxWidth: Platform.select({
@@ -284,7 +273,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
 
-  // Bubble
   bubble: {
     borderRadius: 18,
     paddingHorizontal: 16,
@@ -300,10 +288,9 @@ const styles = StyleSheet.create({
   },
   systemBubble: {
     borderTopLeftRadius: 4,
-    marginLeft: 20, // Space for Bundesliga icon
+    marginLeft: 20, 
   },
 
-  // Question
   questionText: {
     fontSize: 16,
     lineHeight: 22,
@@ -311,7 +298,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // Options
   optionsContainer: {
     marginBottom: 8,
   },
@@ -342,7 +328,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // Feedback
   feedbackContainer: {
     padding: 12,
     marginVertical: 8,
@@ -354,14 +339,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Timestamp
   timestamp: {
     fontSize: 11,
     marginTop: 8,
     alignSelf: 'flex-end',
   },
 
-  // Icon Container
   actionsContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

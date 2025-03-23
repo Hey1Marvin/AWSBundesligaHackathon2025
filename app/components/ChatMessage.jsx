@@ -5,12 +5,11 @@ import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
 import ChattingIconUser from '@/assets/images/icons/ChattingIconUser';
 import ChattingIconBundesliga from '@/assets/images/icons/ChattingIconBundesliga';  
 
-// Icons for chat evaluation, copy
+// icons for chat evaluation, copy
 import ThumbsUp from '@/assets/images/icons/Toor';
 import ThumbsDown from '@/assets/images/icons/RoteKarte';
 import VolumeUp from '@/assets/images/icons/speaker';
 import Share from '@/assets/images/icons/Share';
-import { SvgProps, Svg, G, Path, Defs, ClipPath, Ellipse} from "react-native-svg"
 import Copy from '@/assets/images/icons/Copy';
 import * as Speech from 'expo-speech';
 import * as Clipboard from 'expo-clipboard';
@@ -33,7 +32,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
-  const iconScale = useRef(new Animated.Value(0.8)).current;//for bot message options
+  const iconScale = useRef(new Animated.Value(0.8)).current;
 
   const [rating, setRating] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -59,9 +58,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
       setIsShared(true);
       ShareService.setMessage(message);
       await ShareService.share();
-      
-      // Visuelles Feedback nur bei Erfolg
-      
       setTimeout(() => setIsShared(false), 1500);
       
     } catch (error) {
@@ -87,7 +83,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
     }
   };
 
-  // Entfernt die unnötigen States und verwendet nur rating
   const handleThumbs = (type) => {
     setRating(current => current === type ? null : type);
   };
@@ -122,16 +117,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         ])
       ).start();
     }
-
-    //Animation of Bot Message option
-    if (!isUser) {
-      Animated.spring(iconScale, {
-        toValue: 1,
-        friction: 5,
-        useNativeDriver: true,
-      }).start();
-    }
-    
     
     }
   , [fadeAnim, scaleAnim, pulseAnim, isUser, isSpeaking]);
@@ -150,7 +135,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
         )}
 
         <View style={[styles.bubble, isUser ? styles.userBubble : styles.systemBubble, { backgroundColor: isUser ? '#D20515' : Colors[colorScheme ?? 'light'].answerBack }]}>
-          {/* Render full message using Markdown */}
           <Markdown
             style={{
               body: {
@@ -169,7 +153,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
           }]}>{formattedTime}</Animated.Text>
         </View>
   
-        {/* Icons unterhalb der Bubble */}
         {!isUser && (
           <View style={styles.actionsContainer}>
 
@@ -244,7 +227,6 @@ const markdownStyles = {
 };
 
 const styles = StyleSheet.create({
-  // Container
   container: {
     flexDirection: 'row',
     marginBottom: 16,
@@ -257,7 +239,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 
-  // Message Wrapper
   messageWrapper: {
     flexDirection: 'column',
     maxWidth: Platform.select({
@@ -272,7 +253,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
 
-  // Bubble
   bubble: {
     borderRadius: 18,
     paddingHorizontal: 16,
@@ -295,7 +275,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 
-  // Timestamp
   timestamp: {
     color:'#fff',
     fontSize: 11,
@@ -303,7 +282,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
 
-  // Icon Container
   actionsContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -325,7 +303,6 @@ const styles = StyleSheet.create({
     })
   },
 
-  // Icons
   botIcon: {
     position: 'absolute',
     left: 8,
@@ -337,7 +314,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end'
   },
 
-  // Zusätzliche Styles für Konsistenz
   markdownText: {
     fontSize: 16,
     lineHeight: 22,

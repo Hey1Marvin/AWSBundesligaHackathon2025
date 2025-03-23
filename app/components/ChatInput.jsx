@@ -7,7 +7,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Quiz from '@/assets/images/icons/Quiz';
 
-// Extended dictionary with categories and weights
+// Dictionary for smart suggestions
 const SMART_DICTIONARY = {
   sports: {
     words: [
@@ -36,7 +36,6 @@ const SMART_DICTIONARY = {
   }
 };
 
-// Flattened list for simple search
 const FLAT_DICTIONARY = Object.values(SMART_DICTIONARY).reduce(
   (acc, category) => [...acc, ...category.words], []
 );
@@ -52,7 +51,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
   const inputRef = useRef(null);
   const scrollViewRef = useRef(null);
 
-  // Determine the current category based on context
+  // Get category based on context
   const getCurrentCategory = (inputText) => {
     const words = inputText.toLowerCase().split(/\s+/);
     const categoryScores = {};
@@ -70,14 +69,14 @@ const ChatInput = ({ onSend, onQuizStart }) => {
         }
       });
       
-      // Consider previous interactions
+      // Consider also prev. chats
       if (userContext.categories[category]) {
         categoryScores[category] += userContext.categories[category] * 0.5;
       }
     });
     
-    // Select the category with the highest score
-    let topCategory = 'sports'; // Default
+    // Select category with highest score (default: sports)
+    let topCategory = 'sports'; 
     let maxScore = 0;
     Object.keys(categoryScores).forEach(category => {
       if (categoryScores[category] > maxScore) {
@@ -89,7 +88,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     return topCategory;
   };
 
-  // Generate suggestions based on context and current input
+  // Make suggestions with context and input
   const generateSuggestions = (inputText) => {
     const words = inputText.split(/\s+/);
     const lastWord = words[words.length - 1];
@@ -102,7 +101,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       word.length > lastWord.length
     );
     
-    // Try other categories if none are found
+    // otherwise try other categories
     if (matches.length === 0) {
       matches = FLAT_DICTIONARY.filter(word => 
         word.toLowerCase().startsWith(lastWord.toLowerCase()) && 
@@ -110,7 +109,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       );
     }
     
-    // Prioritize recently used suggestions
+    // prioritize recently used
     const recentMatches = recentSuggestions.filter(word => 
       word.toLowerCase().startsWith(lastWord.toLowerCase()) && 
       word.length > lastWord.length
@@ -120,7 +119,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       matches = [...recentMatches, ...matches];
     }
     
-    // Prefer suggestions with optimal length (3-7 extra characters)
+    // Optimal length 3-7 characters
     matches.sort((a, b) => {
       const aLen = a.length - lastWord.length;
       const bLen = b.length - lastWord.length;
@@ -132,11 +131,10 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     return matches.length > 0 ? matches[0].slice(lastWord.length) : '';
   };
 
-  // Update text and generate ghost text suggestion
   const updateText = (inputText) => {
     setText(inputText);
     
-    // Remove suggestion if multiline
+    // Because of multiline input, don't suggest on new lines
     if (inputText.includes('\n')) {
       setSuggestion('');
       return;
@@ -162,7 +160,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       setSuggestion('');
     }
     
-    // Scroll to the end when typing
+    // when typing: scroll to the end
     if (scrollViewRef.current) {
       setTimeout(() => {
         scrollViewRef.current.scrollToEnd({ animated: true });
@@ -170,19 +168,16 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     }
   };
 
-  // Accept the ghost suggestion
   const acceptSuggestion = () => {
     if (suggestion) {
       const words = text.split(/\s+/);
       const lastWord = words[words.length - 1];
       const fullWord = lastWord + suggestion;
       
-      // Add to recent suggestions if not already present
       if (!recentSuggestions.includes(fullWord)) {
         setRecentSuggestions(prev => [fullWord, ...prev.slice(0, 9)]);
       }
       
-      // Update context based on accepted suggestion
       const newContext = { ...userContext };
       Object.keys(SMART_DICTIONARY).forEach(category => {
         if (SMART_DICTIONARY[category].words.includes(fullWord)) {
@@ -191,7 +186,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
       });
       setUserContext(newContext);
       
-      // Replace the last word with the completed word
+      // replace last word with completed word
       words[words.length - 1] = fullWord;
       const completedText = words.join(' ');
       setText(completedText);
@@ -215,7 +210,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     }
   };
 
-  // Send the message
+  // Send message
   const handleSend = () => {
     if (text.trim()) {
       onSend(text);
@@ -224,7 +219,7 @@ const ChatInput = ({ onSend, onQuizStart }) => {
     }
   };
 
-  // Start the quiz
+  // start quiz
   const handleQuizStart = () => {
     if (onQuizStart && typeof onQuizStart === 'function') {
       onQuizStart();
@@ -268,7 +263,6 @@ const ChatInput = ({ onSend, onQuizStart }) => {
                     }
                   }}
                 />
-                {/* Ghost text suggestion overlay */}
                 {suggestion && (
                   <View style={styles.suggestionWrapper}>
                     <Text style={styles.hiddenText}>{text}</Text>
@@ -333,19 +327,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   divLeft: {
-    flex: Platform.OS === 'web' ? 0.9 : 0.8, // increased on mobile for more space
+    flex: Platform.OS === 'web' ? 0.9 : 0.8, 
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
   },
   divRight: {
-    flex: Platform.OS === 'web' ? 0.1 : 0.15, // reduce flex on mobile
+    flex: Platform.OS === 'web' ? 0.1 : 0.15, 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingRight: 12,
-    minWidth: Platform.OS === 'web' ? 170 : 120, // reduce minimum width on mobile
+    minWidth: Platform.OS === 'web' ? 170 : 120, 
   },
   
   scrollContainer: {

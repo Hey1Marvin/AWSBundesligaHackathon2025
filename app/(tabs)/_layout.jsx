@@ -89,7 +89,7 @@ export default function TabLayout() {
   };
   
 
-  // Desktop: sidebar layout
+  // Because of wide screen there is sidebar instead of bottom tabbar
   if (isDesktop) {
     return (
       <View style={styles.desktopContainer}>
@@ -137,7 +137,7 @@ export default function TabLayout() {
     );
   }
 
-  // Mobile: subtle tab bar at bottom
+  // Because of small screen there is bottom tabbar on mobile
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style={isDarkMode ? 'light' : 'dark'} />

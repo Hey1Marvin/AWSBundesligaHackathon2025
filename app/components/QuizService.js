@@ -1,5 +1,3 @@
-// QuizService.js - Verwaltet Quiz-Fragen und Logik
-
 const QUIZ_QUESTIONS = [
     {
       question: "Welcher Verein gewann die erste Bundesliga-Saison 1963/64?",
@@ -61,7 +59,6 @@ const QUIZ_QUESTIONS = [
       this.totalQuestions = this.questions.length;
     }
   
-    // Holt die aktuelle Frage
     getCurrentQuestion() {
       if (this.currentIndex < this.questions.length) {
         return this.questions[this.currentIndex];
@@ -69,7 +66,7 @@ const QUIZ_QUESTIONS = [
       return null;
     }
   
-    // Prüft eine Antwort und geht zur nächsten Frage
+    // Check Antwort
     answerQuestion(answerIndex) {
       const currentQuestion = this.getCurrentQuestion();
       const isCorrect = currentQuestion && answerIndex === currentQuestion.correctAnswer;
@@ -89,16 +86,13 @@ const QUIZ_QUESTIONS = [
       };
     }
   
-    // Quiz zurücksetzen
     reset() {
       this.currentIndex = 0;
       this.score = 0;
-      // Fragen mischen für neue Quizrunde
       this.shuffleQuestions();
       return this.getCurrentQuestion();
     }
   
-    // Mischt die Fragen für mehr Abwechslung
     shuffleQuestions() {
       for (let i = this.questions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -106,7 +100,6 @@ const QUIZ_QUESTIONS = [
       }
     }
   
-    // Quiz auf bestimmte Anzahl Fragen begrenzen
     limitQuestions(count = 5) {
       this.shuffleQuestions();
       this.questions = this.questions.slice(0, count);

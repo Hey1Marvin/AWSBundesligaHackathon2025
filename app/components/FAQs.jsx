@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     width: '70%',
     borderWidth: 1,
     borderColor: '#555',
-    // Subtle shadow for depth
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
