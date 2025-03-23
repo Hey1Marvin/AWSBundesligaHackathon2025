@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions, Text, TouchableOpacity, Platform, Image } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import BundesligaLogo from '@/assets/images/icons/BundesligaLogo';
 import ChattingIconUser from '@/assets/images/icons/ChattingIconUser';
@@ -22,7 +22,7 @@ import { ShareService } from '../components/shareService'; // for share option
 
 
 
-const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
+const ChatMessage = ({ message, type = 'system', timestamp = new Date(), mediaContent = null }) => {
   // Color Handling
   const colorScheme = useColorScheme();
   const isUser = type === 'user';
@@ -38,6 +38,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isShared, setIsShared] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   // Farben aus Ihrem Theme
   const activeColor = Colors[colorScheme ?? 'light'].mainRed;
@@ -57,6 +58,12 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
     try {
       setIsShared(true);
       ShareService.setMessage(message);
+      
+      // If there's media content, add it to the share data
+      if (mediaContent && mediaContent.url) {
+        ShareService.setMedia(mediaContent);
+      }
+      
       await ShareService.share();
       setTimeout(() => setIsShared(false), 1500);
       
@@ -85,6 +92,11 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
 
   const handleThumbs = (type) => {
     setRating(current => current === type ? null : type);
+  };
+
+  // handle image load errors
+  const handleImageError = () => {
+    setImageError(true);
   };
 
   useEffect(() => {
@@ -147,6 +159,23 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date() }) => {
           >
             {message}
           </Markdown>
+          
+          {!isUser && mediaContent && mediaContent.type === 'image' && !imageError && (
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: mediaContent.url }}
+                style={styles.messageImage}
+                resizeMode="contain"
+                onError={handleImageError}
+              />
+              {mediaContent.caption && (
+                <Text style={[styles.imageCaption, { color: Colors[colorScheme ?? 'light'].answerTint }]}>
+                  {mediaContent.caption}
+                </Text>
+              )}
+            </View>
+          )}
+          
           <Animated.Text style={[styles.timestamp, 
           {
             color: isUser ? '#FFFFFF' : Colors[colorScheme ?? 'light'].tint,
@@ -273,6 +302,41 @@ const styles = StyleSheet.create({
   systemBubble: {
     borderTopLeftRadius: 4,
     marginLeft: 20,
+  },
+  imageContainer: {
+    marginTop: 12,
+    marginBottom: 8,
+    alignItems: 'center',
+    width: '100%',
+  },
+  messageImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+  },
+  imageCaption: {
+    marginTop: 6,
+    fontSize: 14,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+
+  imageContainer: {
+    marginTop: 12,
+    marginBottom: 8,
+    alignItems: 'center',
+    width: '100%',
+  },
+  messageImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+  },
+  imageCaption: {
+    marginTop: 6,
+    fontSize: 14,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 
   timestamp: {

@@ -55,6 +55,41 @@ const AnimatedTypingDot = ({ delay = 0 }) => {
   );
 };
 
+// Helper function to detect if a message contains media requests
+const detectMediaRequests = (text) => {
+  const imageRequestPatterns = [
+    /zeig mir (ein bild|eine grafik|ein foto|eine karte)/i,
+    /kannst du (ein bild|eine grafik|ein foto|eine karte) (zeigen|anzeigen)/i,
+    /ich würde gerne (ein bild|eine grafik|ein foto|eine karte) sehen/i,
+    /hast du (ein bild|eine grafik|ein foto|eine karte)/i,
+    /show me (an image|a picture|a photo|a chart|a map)/i,
+    /can you show (an image|a picture|a photo|a chart|a map)/i
+  ];
+  
+  return imageRequestPatterns.some(pattern => pattern.test(text));
+};
+
+// Helper to parse AI response for potential media content
+const parseMediaContent = (text) => {
+  // Check if response indicates it might have had an image
+  const imageIndicators = [
+    /Hier ist (ein Bild|eine Grafik|ein Foto|eine Karte)/i,
+    /Ich kann dir leider kein Bild/i,
+    /Here is (an image|a picture|a photo|a chart|a map)/i,
+    /I cannot show you (an image|a picture|a photo)/i
+  ];
+  
+  if (imageIndicators.some(indicator => indicator.test(text))) {
+    return {
+      type: 'image',
+      url: 'https://www.bundesliga.com/assets/liveticker/images/placeholder-image.jpg',
+      caption: 'Dieses Bild konnte nicht geladen werden'
+    };
+  }
+  
+  return null;
+};
+
 const ChatWindow = () => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -81,12 +116,22 @@ const ChatWindow = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
+    // Detect if the user is requesting media content
+    const containsMediaRequest = detectMediaRequests(text);
+
+    // Detect if the user is requesting media content
+    const containsMediaRequest = detectMediaRequests(text);
+
     // choose API URL based on platform.
     const apiUrl = Platform.OS === 'web'
       ? 'http://localhost:3001/proxy/hackaton/chat'
       : 'https://hdeepi3xgi.execute-api.eu-central-1.amazonaws.com/hackaton/chat';
 
-    const promptBody = { prompt: text };
+    // Add media request flag to prompt if needed
+    const promptBody = { 
+      prompt: text,
+      includeMedia: containsMediaRequest 
+    };
 
     try {
       const response = await fetch(apiUrl, {
@@ -100,11 +145,18 @@ const ChatWindow = () => {
       const data = await response.json();
       const reply = data?.output?.message?.content[0]?.text;
       
+      // Check if the response should include media
+      const mediaContent = containsMediaRequest ? parseMediaContent(reply) : null;
+      
+      // Check if the response should include media
+      const mediaContent = containsMediaRequest ? parseMediaContent(reply) : null;
+      
       const botMessage = { 
         id: Date.now().toString(), 
         message: reply, 
         type: "system", 
-        timestamp: new Date() 
+        timestamp: new Date(),
+        mediaContent: mediaContent
       };
       setMessages(prev => [...prev, botMessage]);
       setIsTyping(false);
@@ -230,7 +282,8 @@ const ChatWindow = () => {
               key={msg.id} 
               message={msg.message} 
               type={msg.type} 
-              timestamp={msg.timestamp} 
+              timestamp={msg.timestamp}
+              mediaContent={msg.mediaContent} 
             />
           );
         })}
@@ -277,7 +330,7 @@ const styles = StyleSheet.create({
   },
   messagesContent: {
     paddingVertical: 8,
-    paddingBottom: 80,
+    paddingBottom: 95,
   },
   typingContainer: {
     paddingHorizontal: 16,
