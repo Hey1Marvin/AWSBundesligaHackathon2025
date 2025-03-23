@@ -59,7 +59,7 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date(), mediaCo
       setIsShared(true);
       ShareService.setMessage(message);
       
-      // If there's media content, add it to the share data
+      // If media content, add it to share 
       if (mediaContent && mediaContent.url) {
         ShareService.setMedia(mediaContent);
       }
@@ -94,7 +94,6 @@ const ChatMessage = ({ message, type = 'system', timestamp = new Date(), mediaCo
     setRating(current => current === type ? null : type);
   };
 
-  // handle image load errors
   const handleImageError = () => {
     setImageError(true);
   };
